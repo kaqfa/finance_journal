@@ -14,7 +14,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         required=True,
         validators=[UniqueValidator(queryset=User.objects.all())]
     )
-    
+
     password = serializers.CharField(
         write_only=True, 
         required=True, 
