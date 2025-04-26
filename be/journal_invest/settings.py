@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'dashboard',
     'rest_framework',
     'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
     'drf_yasg',
     'api',
 ]
@@ -81,6 +82,7 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
@@ -91,7 +93,7 @@ REST_FRAMEWORK = {
         'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.BrowsableAPIRenderer',
     ],
-    'EXCEPTION_HANDLER': 'api.utils.exception_handler.custom_exception_handler',
+    # 'EXCEPTION_HANDLER': 'api.utils.exception_handler.custom_exception_handler',
 }
 
 from datetime import timedelta

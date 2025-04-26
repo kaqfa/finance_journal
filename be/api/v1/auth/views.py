@@ -67,7 +67,6 @@ class PasswordChangeView(APIView):
 
     def put(self, request):
         serializer = PasswordChangeSerializer(data=request.data)
-        
         if serializer.is_valid():
             user = request.user
             
