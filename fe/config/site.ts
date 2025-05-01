@@ -1,45 +1,59 @@
 export type SiteConfig = typeof siteConfig;
 
 export const siteConfig = {
-  name: "Manajemen Investasi dan Keuangan",
-  description: "Website yang keren banget pokoknya lah, buktikan aja sendiri.",
+  name: "Finance Journal App",
+  description: "Manage your investments and finances in one place",
   navItems: [
     {
       label: "Dashboard",
-      href: "/",
+      href: "/dashboard",
     },
     {
-      label: "Journal",
-      href: "/journal",
+      label: "Portfolio",
+      href: "/portfolio",
+    },
+    {
+      label: "Trading",
+      href: "/trading",
     },
     {
       label: "Finance",
       href: "/finance",
     },
     {
-      label: "Info",
-      href: "/info",
+      label: "Settings",
+      href: "/settings",
     },
   ],
   navMenuItems: [
     {
       label: "Dashboard",
-      href: "/",
+      href: "/dashboard",
     },
     {
-      label: "Journal",
-      href: "/journal",
+      label: "Portfolio",
+      href: "/portfolio",
+    },
+    {
+      label: "Trading",
+      href: "/trading",
     },
     {
       label: "Finance",
       href: "/finance",
     },
     {
-      label: "Info",
-      href: "/info",
+      label: "Settings",
+      href: "/settings",
+    },
+    {
+      label: "Logout",
+      href: "/api/auth/logout",
     },
   ],
   links: {
-    sponsor: "https://fahrifirdaus.my.id/",
+    github: "https://github.com/yourusername/finance-journal",
+    docs: "https://finance-journal.com/docs",
+    sponsor: "https://finance-journal.com"
   },
 };
