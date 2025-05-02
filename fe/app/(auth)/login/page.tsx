@@ -5,10 +5,12 @@ import { Input } from "@heroui/input";
 import { Button } from "@heroui/button";
 import { Link } from "@heroui/link";
 import { Divider } from "@heroui/divider";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
+import { authAPI } from "@/lib/api";
 
 export default function LoginPage() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const { login, loading: authLoading, error: authError, clearError } = useAuth();
   
@@ -54,10 +56,12 @@ export default function LoginPage() {
     setError("");
     
     try {
+      // Menggunakan fungsi login dari AuthContext
       await login(formData.username, formData.password);
-      // No need to redirect, Auth context will handle it
+      // Redirect akan ditangani otomatis oleh fungsi login
     } catch (err: any) {
-      setError(err.response?.data?.detail || err.message || "Login failed");
+      console.error("Login error:", err);
+      setError(err.response?.data?.detail || "Gagal login. Silakan cek kembali username dan password Anda.");
     }
   };
 

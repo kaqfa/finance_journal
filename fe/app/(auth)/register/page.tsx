@@ -6,8 +6,10 @@ import { Button } from "@heroui/button";
 import { Link } from "@heroui/link";
 import { Divider } from "@heroui/divider";
 import { useAuth } from "@/contexts/AuthContext";
+import { useRouter } from "next/navigation";
 
 export default function RegisterPage() {
+  const router = useRouter();
   const { register, loading: authLoading, error: authError, clearError } = useAuth();
   
   const [formData, setFormData] = useState({
@@ -94,25 +96,33 @@ export default function RegisterPage() {
     if (!validateForm()) return;
 
     try {
-      await register(formData);
-      // Auth context will handle redirection
+      // Menggunakan fungsi register dari AuthContext
+      await register({
+        first_name: formData.first_name,
+        last_name: formData.last_name,
+        username: formData.username,
+        email: formData.email,
+        password: formData.password,
+        password2: formData.password2
+      });
+      
+      // Redirect akan ditangani oleh AuthContext
     } catch (err: any) {
-      // Handle validation errors from backend
+      console.error("Registration error:", err);
       if (err.response?.data) {
-        const data = err.response.data;
-        setErrors({
-          ...errors,
-          ...(data.username && { username: typeof data.username === 'string' ? data.username : data.username[0] }),
-          ...(data.email && { email: typeof data.email === 'string' ? data.email : data.email[0] }),
-          ...(data.password && { password: typeof data.password === 'string' ? data.password : data.password[0] }),
-          ...(data.password2 && { password2: typeof data.password2 === 'string' ? data.password2 : data.password2[0] }),
-          ...(data.non_field_errors && { general: typeof data.non_field_errors === 'string' ? data.non_field_errors : data.non_field_errors[0] }),
-        });
+        // Handle API error responses
+        const apiErrors = err.response.data;
+        setErrors(prev => ({
+          ...prev,
+          ...apiErrors,
+          general: apiErrors.detail || 'Registration failed. Please try again.'
+        }));
       } else {
-        setErrors({
-          ...errors,
-          general: err.message || "An error occurred during registration",
-        });
+        // Handle network or other errors
+        setErrors(prev => ({
+          ...prev,
+          general: 'An error occurred during registration. Please try again.'
+        }));
       }
     }
   };

@@ -6,8 +6,10 @@ import { Button } from "@heroui/button";
 import { Link } from "@heroui/link";
 import { Divider } from "@heroui/divider";
 import { authAPI } from "@/lib/api";
+import { useRouter } from "next/navigation";
 
 export default function ForgetPasswordPage() {
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
@@ -19,15 +21,17 @@ export default function ForgetPasswordPage() {
     setError("");
 
     try {
-      // Use the API utility instead of direct fetch
+      // Menggunakan authAPI untuk reset password
       await authAPI.resetPassword(email);
+      
+      // Set success state untuk menampilkan konfirmasi
       setSuccess(true);
     } catch (err: any) {
+      console.error("Password reset error:", err);
       setError(
         err.response?.data?.detail || 
         err.response?.data?.error || 
-        err.message || 
-        "An error occurred during the password reset request"
+        "Terjadi kesalahan saat memproses permintaan reset password. Silakan coba lagi."
       );
     } finally {
       setIsLoading(false);
