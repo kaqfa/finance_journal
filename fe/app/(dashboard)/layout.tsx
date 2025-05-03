@@ -1,53 +1,38 @@
+// fe/app/(dashboard)/layout.tsx
 "use client";
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/contexts/AuthContext";
+import DashboardLayout from "@/components/layout/DashboardLayout";
+import { Spinner } from "@/components/ui/spinner";
 
-export default function DashboardLayout({
+export default function AppDashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const { isAuthenticated, loading } = useAuth();
   const router = useRouter();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check if user is authenticated
-    const checkAuth = () => {
-      try {
-        const token = localStorage.getItem("accessToken");
-        
-        if (!token) {
-          // Redirect to login if no token
-          router.push("/login");
-          return;
-        }
-        
-        setIsAuthenticated(true);
-      } catch (error) {
-        console.error("Error checking authentication:", error);
-        router.push("/login");
-      } finally {
-        setLoading(false);
-      }
-    };
+    // If not authenticated and not loading, redirect to login
+    if (!isAuthenticated && !loading) {
+      router.push("/login");
+    }
+  }, [isAuthenticated, loading, router]);
 
-    checkAuth();
-  }, [router]);
-
+  // Show loading spinner while checking authentication
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
-        <p>Loading...</p>
+        <Spinner size="lg" label="Loading..." />
       </div>
     );
   }
 
-  // Only render children if authenticated
+  // Only render the children if authenticated
   return isAuthenticated ? (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      {children}
-    </div>
+    <DashboardLayout>{children}</DashboardLayout>
   ) : null;
 }
