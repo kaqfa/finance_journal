@@ -49,6 +49,11 @@ class Wallet(models.Model):
     
     def __str__(self):
         return f"{self.name} ({self.get_wallet_type_display()})"
+
+    def save(self, *args, **kwargs):
+        if self.pk is None:  # jika ini wallet baru
+            self.current_balance = self.initial_balance
+        super().save(*args, **kwargs)
     
     def update_balance(self):
         """Update current_balance based on all transactions"""
@@ -76,6 +81,11 @@ class Wallet(models.Model):
             total=models.Sum('fee'))['total'] or Decimal('0')
         
         balance += incoming - outgoing - outgoing_fees
+
+        Wallet.objects.filter(pk=self.pk).update(
+            current_balance=balance,
+            updated_at=timezone.now()
+        )
         
         # Update current balance
         self.current_balance = balance
