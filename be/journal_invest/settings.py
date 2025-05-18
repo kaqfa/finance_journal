@@ -204,3 +204,8 @@ CORS_ALLOW_HEADERS = [
     "x-csrftoken",
     "x-requested-with",
 ]
+
+try:
+    from .local_settings import *
+except ImportError:
+    pass
