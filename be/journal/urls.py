@@ -5,7 +5,8 @@ from journal.views import application as app
 app_name = 'journal'
 
 urlpatterns = [
-    path('', login.loginView, name='login'),
+    path('', app.landing_page, name='landing'),
+    path('login', login.loginView, name='login'),
     path('sign-in', login.signIn, name='signIn'),
     path('register', login.register, name='register'),
     path('forget-password', login.forgetPassword, name='forget_password'),

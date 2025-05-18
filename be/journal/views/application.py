@@ -3,6 +3,9 @@ from django.contrib.auth.decorators import login_required
 
 from django.conf import settings
 
+def landing_page(request):
+    return render(request, 'pages/landing.html')
+
 @login_required
 def transaction_list(request):
     return render(request, 'pages/transaction_list.html')
