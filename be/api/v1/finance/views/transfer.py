@@ -3,7 +3,7 @@ from rest_framework.response import Response
 
 from finance.models import Transfer
 from ..serializers import TransferSerializer, TransferCreateSerializer
-
+from api.utils.permissions import IsOwner
 
 class TransferViewSet(viewsets.ModelViewSet):
     """
@@ -13,7 +13,7 @@ class TransferViewSet(viewsets.ModelViewSet):
     Saat dibuat, transfer otomatis membuat transaksi tipe 'transfer' di wallet sumber
     dan mengupdate saldo kedua wallet (sumber dan tujuan).
     """
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, IsOwner]
     filter_backends = [filters.OrderingFilter]
     ordering_fields = ['created_at']
     ordering = ['-created_at']

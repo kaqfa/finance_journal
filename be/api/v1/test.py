@@ -362,3 +362,25 @@ class TagApiTests(FinanceApiTestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 1)
         self.assertEqual(response.data[0]['description'], 'Monthly salary')
+
+
+class PermissionTests(APITestCase):
+    def setUp(self):
+        self.user1 = User.objects.create_user('user1', 'user1@test.com', 'pass')
+        self.user2 = User.objects.create_user('user2', 'user2@test.com', 'pass')
+        
+        self.wallet_user1 = Wallet.objects.create(
+            user=self.user1,
+            name="User1 Wallet",
+            wallet_type="bank"
+        )
+        
+    def test_user_cannot_access_others_wallet(self):
+        """Test IsOwner permission - user2 tidak bisa akses wallet user1"""
+        self.client.force_authenticate(user=self.user2)
+        
+        # Try to access user1's wallet
+        response = self.client.get(f'/api/v1/finance/wallets/{self.wallet_user1.id}/')
+        
+        # Should be 404 (karena get_queryset filter) atau 403 (kalau IsOwner kick in)
+        self.assertIn(response.status_code, [status.HTTP_404_NOT_FOUND, status.HTTP_403_FORBIDDEN])

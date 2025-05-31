@@ -4,9 +4,10 @@ from rest_framework.response import Response
 
 from finance.models import Wallet
 from ..serializers import WalletSerializer, WalletListSerializer
+from api.utils.permissions import IsOwner
+from api.utils.mixins import ChoicesMixin
 
-
-class WalletViewSet(viewsets.ModelViewSet):
+class WalletViewSet(ChoicesMixin, viewsets.ModelViewSet):
     """
     manajemen wallet (dompet/rekening).
     
@@ -14,11 +15,18 @@ class WalletViewSet(viewsets.ModelViewSet):
     e-wallet, uang tunai, kartu kredit, dll. Saldo wallet diupdate otomatis
     berdasarkan transaksi yang terjadi.
     """
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, IsOwner]
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ['name']
     ordering_fields = ['name', 'current_balance', 'created_at']
     ordering = ['name']
+
+    choices_config = {
+        'wallet_types': {
+            'choices': Wallet.WALLET_TYPE_CHOICES,
+            'description': 'Tipe-tipe wallet yang tersedia'
+        }
+    }
 
     def get_serializer_class(self):
         """

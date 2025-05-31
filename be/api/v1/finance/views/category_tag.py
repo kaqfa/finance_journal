@@ -4,9 +4,10 @@ from rest_framework.response import Response
 
 from finance.models import Category, Tag, Transaction
 from ..serializers import CategorySerializer, TagSerializer, TransactionListSerializer
+from api.utils.permissions import IsOwner
+from api.utils.mixins import ChoicesMixin
 
-
-class CategoryViewSet(viewsets.ModelViewSet):
+class CategoryViewSet(ChoicesMixin, viewsets.ModelViewSet):
     """
     manajemen kategori transaksi keuangan.
     
@@ -14,17 +15,27 @@ class CategoryViewSet(viewsets.ModelViewSet):
     pemasukan (income) atau pengeluaran (expense).
     """
     serializer_class = CategorySerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, IsOwner]
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ['name']
     ordering_fields = ['name', 'type', 'created_at']
     ordering = ['type', 'name']
+    choices_config = {
+        'category_types': {
+            'choices': Category.CATEGORY_TYPE_CHOICES,
+            'description': 'Tipe-tipe kategori yang tersedia'
+        }
+    }
+
+    def get_swagger_auto_schema(self):
+        return super().get_swagger_auto_schema()
 
     def get_queryset(self):
         """
         Filter queryset untuk hanya menampilkan kategori milik user saat ini.
         """
         return Category.objects.filter(user=self.request.user)
+    
     
     @action(detail=False, methods=['get'])
     def income(self, request):
@@ -62,7 +73,7 @@ class TagViewSet(viewsets.ModelViewSet):
     
     """
     serializer_class = TagSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, IsOwner]
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ['name']
     ordering_fields = ['name', 'created_at']

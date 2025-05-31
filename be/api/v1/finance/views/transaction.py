@@ -14,8 +14,10 @@ from ..serializers import (
     MonthlyReportSerializer,
     TransactionSummarySerializer
 )
+from api.utils.permissions import IsOwner
+from api.utils.mixins import ChoicesMixin
 
-class TransactionViewSet(viewsets.ModelViewSet):
+class TransactionViewSet(ChoicesMixin, viewsets.ModelViewSet):
     """
     manajemen transaksi keuangan.
     
@@ -23,11 +25,18 @@ class TransactionViewSet(viewsets.ModelViewSet):
     pengeluaran (expense), atau transfer antar wallet. Ketika transaksi dibuat,
     diupdate, atau dihapus, saldo wallet terkait akan diupdate secara otomatis.
     """
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, IsOwner]
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ['description', 'wallet__name', 'category__name']
     ordering_fields = ['transaction_date', 'amount', 'created_at']
     ordering = ['-transaction_date']
+
+    choices_config = {
+        'transaction_types': {
+            'choices': Transaction.TRANSACTION_TYPE_CHOICES,
+            'description': 'Tipe-tipe transaksi yang tersedia'
+        }
+    }
 
     def get_serializer_class(self):
         """
@@ -36,7 +45,7 @@ class TransactionViewSet(viewsets.ModelViewSet):
         if self.action == 'list':
             return TransactionListSerializer
         return TransactionSerializer
-
+    
     def get_queryset(self):
         """
         Filter queryset untuk hanya menampilkan transaksi milik user saat ini
