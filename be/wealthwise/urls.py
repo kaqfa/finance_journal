@@ -26,10 +26,25 @@ schema_view = get_schema_view(
     openapi.Info(
         title="Journal Invest API",
         default_version='v1',
-        description="Dokumentasi API untuk aplikasi Journal Invest",
-        # terms_of_service="https://www.yourapp.com/terms/",
+        description="""
+        Dokumentasi API untuk aplikasi Journal Invest - Finance & Investment Tracker
+        
+        ## Authentication
+        API ini menggunakan JWT (JSON Web Token) untuk authentication.
+        
+        ### Cara menggunakan:
+        1. Login via `/api/v1/auth/login/` untuk mendapatkan access token
+        2. Klik tombol "Authorize" di kanan atas
+        3. Masukkan token dengan format: `Bearer your_access_token_here`
+        4. Klik "Authorize" untuk menyimpan token
+        5. Sekarang Anda bisa mengakses endpoint yang membutuhkan authentication
+        
+        ### Format Authorization Header:
+        ```
+        Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...
+        ```
+        """,
         contact=openapi.Contact(email="fahri@sembarang.com"),
-        # license=openapi.License(name="BSD License"),
     ),
     public=True,
     permission_classes=[permissions.AllowAny],
@@ -42,8 +57,11 @@ urlpatterns = [
     path('api/', include('api.urls')),
     path('', include('master.urls', namespace='application')),
 
+    # Swagger Documentation URLs
     re_path(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
     path('api/v1/docs/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+    path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui-alt'),  # Shortcut URL
+    path('docs/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-docs'),  # Alternative URL
     # path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 
 ]

@@ -132,6 +132,34 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         return user
 
 
+class LoginSerializer(serializers.Serializer):
+    """
+    Serializer untuk login authentication
+    """
+    username = serializers.CharField(
+        required=True,
+        help_text="Username untuk login"
+    )
+    password = serializers.CharField(
+        required=True,
+        write_only=True,
+        style={'input_type': 'password'},
+        help_text="Password untuk login"
+    )
+
+    def validate(self, attrs):
+        """
+        Validate username and password
+        """
+        username = attrs.get('username')
+        password = attrs.get('password')
+        
+        if not username or not password:
+            raise serializers.ValidationError("Username dan password wajib diisi")
+        
+        return attrs
+
+
 class PasswordChangeSerializer(serializers.Serializer):
     """
     Serializer untuk change password

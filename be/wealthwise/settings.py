@@ -55,7 +55,7 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    'api.middleware.CSRFExemptMiddleware',  # Custom CSRF middleware for API
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -88,24 +88,17 @@ SWAGGER_SETTINGS = {
             'type': 'apiKey',
             'name': 'Authorization',
             'in': 'header',
-            'description': 'JWT authorization header using the Bearer scheme. Example: "Authorization: Bearer {token}"'
-        },
-        'Basic': {
-            'type': 'basic'
-        },
-        'Session': {
-            'type': 'apiKey',
-            'name': 'sessionid',
-            'in': 'cookie'
+            'description': 'JWT authorization header using the Bearer scheme. Format: "Bearer {your_token_here}"'
         }
     },
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.TokenAuthentication',
     ],
     'DEFAULT_AUTO_SCHEMA_CLASS': 'drf_yasg.inspectors.SwaggerAutoSchema',
     'USE_SESSION_AUTH': False,  # ✅ Disable session auth sebagai default
+    'SECURITY_REQUIREMENTS': [{'Bearer': []}],  # Apply JWT auth globally
+    'LOGIN_URL': '/api/v1/auth/login/',  # Login endpoint for authentication
+    'LOGOUT_URL': '/api/v1/auth/logout/',  # Logout endpoint
     'JSON_EDITOR': True,
     'SUPPORTED_SUBMIT_METHODS': [
         'get',
@@ -126,7 +119,7 @@ SWAGGER_SETTINGS = {
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
+        # 'rest_framework.authentication.SessionAuthentication',  # Removed for API
         'rest_framework.authentication.TokenAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
@@ -237,6 +230,24 @@ CORS_ALLOWED_ORIGINS = [
     "https://subdomain.example.com",
     "http://localhost:3000",  # untuk development
 ]
+
+# CSRF Settings untuk API
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+    "http://localhost:3000",
+]
+
+# Exempt API endpoints from CSRF
+CSRF_EXEMPT_URLS = [
+    r'^/api/v1/auth/',
+    r'^/api/v1/',
+]
+
+# Untuk Swagger UI
+CSRF_COOKIE_HTTPONLY = False
+CSRF_COOKIE_SECURE = False  # Set True in production with HTTPS
+CSRF_USE_SESSIONS = False
 
 # CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True

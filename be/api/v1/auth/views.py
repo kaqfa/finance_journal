@@ -1,21 +1,27 @@
 # from django.contrib.auth.models import User
 from master.models import User
 from django.contrib.auth import authenticate
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 from rest_framework import generics, permissions, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework_simplejwt.tokens import RefreshToken
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
 
 from .serializers import (
     UserSerializer,
     UserRegistrationSerializer,
+    LoginSerializer,
     PasswordChangeSerializer,
     PasswordResetSerializer,
     RegTokenValidationSerializer
 )
 
 
+@method_decorator(csrf_exempt, name='dispatch')
 class RegisterView(generics.CreateAPIView):
     """
     Enhanced User Registration dengan Registration Token validation
@@ -23,6 +29,34 @@ class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
     permission_classes = [permissions.AllowAny]
     serializer_class = UserRegistrationSerializer
+    
+    @swagger_auto_schema(
+        operation_summary="User Registration",
+        operation_description="Register user baru dengan registration token",
+        responses={
+            201: openapi.Response(
+                description="Registrasi berhasil",
+                examples={
+                    "application/json": {
+                        "message": "Registrasi berhasil! Selamat datang di Journal Invest.",
+                        "user": {"id": 1, "username": "newuser", "email": "new@example.com"},
+                        "tokens": {
+                            "refresh": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...",
+                            "access": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."
+                        }
+                    }
+                }
+            ),
+            400: openapi.Response(
+                description="Data tidak valid atau token tidak valid",
+                examples={
+                    "application/json": {
+                        "token_registrasi": ["Token registrasi tidak valid."]
+                    }
+                }
+            )
+        }
+    )
     
     def create(self, request, *args, **kwargs):
         """
@@ -53,6 +87,36 @@ class RegisterView(generics.CreateAPIView):
             }, status=status.HTTP_400_BAD_REQUEST)
 
 
+@swagger_auto_schema(
+    method='post',
+    request_body=RegTokenValidationSerializer,
+    responses={
+        200: openapi.Response(
+            description="Token valid",
+            examples={
+                "application/json": {
+                    "token_name": "Alpha Testing Token",
+                    "token_code": "ALPHA2025",
+                    "remaining_usage": "Unlimited",
+                    "expires_at": "2025-12-31T23:59:59Z",
+                    "is_valid": True,
+                    "message": "Token valid dan dapat digunakan untuk registrasi"
+                }
+            }
+        ),
+        400: openapi.Response(
+            description="Token tidak valid",
+            examples={
+                "application/json": {
+                    "error": "Token tidak valid",
+                    "details": {"token_code": ["Token registrasi tidak ditemukan."]}
+                }
+            }
+        )
+    },
+    operation_description="Validasi registration token sebelum registrasi",
+    operation_summary="Validate Registration Token"
+)
 @api_view(['POST'])
 @permission_classes([permissions.AllowAny])
 def validate_registration_token(request):
@@ -75,21 +139,56 @@ def validate_registration_token(request):
     }, status=status.HTTP_400_BAD_REQUEST)
 
 
+@method_decorator(csrf_exempt, name='dispatch')
 class LoginView(APIView):
     """
     Enhanced Login dengan informasi registration token
     """
     permission_classes = [permissions.AllowAny]
 
+    @swagger_auto_schema(
+        request_body=LoginSerializer,
+        responses={
+            200: openapi.Response(
+                description="Login berhasil",
+                examples={
+                    "application/json": {
+                        "message": "Selamat datang kembali, John Doe!",
+                        "tokens": {
+                            "refresh": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...",
+                            "access": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."
+                        },
+                        "user": {
+                            "id": 1,
+                            "username": "johndoe",
+                            "email": "john@example.com"
+                        }
+                    }
+                }
+            ),
+            401: openapi.Response(
+                description="Unauthorized - Username atau password salah",
+                examples={
+                    "application/json": {
+                        "error": "Username atau password salah"
+                    }
+                }
+            )
+        },
+        operation_description="Login untuk mendapatkan JWT access dan refresh token",
+        operation_summary="User Login"
+    )
     def post(self, request):
-        username = request.data.get("username")
-        password = request.data.get("password")
+        serializer = LoginSerializer(data=request.data)
         
-        if not username or not password:
+        if not serializer.is_valid():
             return Response(
-                {"error": "Username dan password wajib diisi"},
+                {"error": "Data tidak valid", "details": serializer.errors},
                 status=status.HTTP_400_BAD_REQUEST
             )
+        
+        username = serializer.validated_data["username"]
+        password = serializer.validated_data["password"]
         
         user = authenticate(username=username, password=password)
         
@@ -117,6 +216,7 @@ class LoginView(APIView):
         })
 
 
+@method_decorator(csrf_exempt, name='dispatch')
 class LogoutView(APIView):
     """
     Logout dengan blacklist token
@@ -146,6 +246,7 @@ class LogoutView(APIView):
             }, status=status.HTTP_400_BAD_REQUEST)
 
 
+@method_decorator(csrf_exempt, name='dispatch')
 class PasswordChangeView(APIView):
     """
     Change password untuk authenticated user
@@ -176,6 +277,7 @@ class PasswordChangeView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+@method_decorator(csrf_exempt, name='dispatch')
 class PasswordResetView(APIView):
     """
     Password reset request (placeholder for email implementation)
@@ -208,6 +310,7 @@ class PasswordResetView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+@method_decorator(csrf_exempt, name='dispatch')
 class ProfileView(generics.RetrieveUpdateAPIView):
     """
     User profile view dengan registration token info
