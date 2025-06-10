@@ -1,0 +1,314 @@
+###
+# Authentication with Registration Token Testing
+# Test enhanced authentication system dengan limited registration
+###
+
+@baseUrl = http://localhost:8000
+@apiBase = {{baseUrl}}/api/v1
+
+# Variables (update sesuai response)
+@accessToken = your_access_token_here
+@refreshToken = your_refresh_token_here
+@registrationToken = your_registration_token_here
+
+###
+# 🔐 REGISTRATION TOKEN SYSTEM
+###
+
+### Get Registration Info
+GET {{apiBase}}/auth/registration-info/
+
+### Validate Registration Token - Valid Token
+POST {{apiBase}}/auth/validate-token/
+Content-Type: application/json
+
+{
+  "token_code": "ALPHA2025"
+}
+
+### Validate Registration Token - Invalid Token
+POST {{apiBase}}/auth/validate-token/
+Content-Type: application/json
+
+{
+  "token_code": "INVALID_TOKEN"
+}
+
+### Register User with Valid Token
+POST {{apiBase}}/auth/register/
+Content-Type: application/json
+
+{
+  "username": "alphauser",
+  "password": "testpass123",
+  "password2": "testpass123",
+  "email": "alpha@example.com",
+  "first_name": "Alpha",
+  "last_name": "Tester",
+  "phone": "+6281234567890",
+  "token_registrasi": "ALPHA2025"
+}
+
+### Register User without Token (should fail)
+POST {{apiBase}}/auth/register/
+Content-Type: application/json
+
+{
+  "username": "notoken",
+  "password": "testpass123",
+  "password2": "testpass123",
+  "email": "notoken@example.com",
+  "first_name": "No",
+  "last_name": "Token"
+}
+
+### Register User with Invalid Token (should fail)
+POST {{apiBase}}/auth/register/
+Content-Type: application/json
+
+{
+  "username": "invalidtoken",
+  "password": "testpass123",
+  "password2": "testpass123",
+  "email": "invalid@example.com",
+  "first_name": "Invalid",
+  "last_name": "Token",
+  "token_registrasi": "INVALID_TOKEN"
+}
+
+### Register User with Expired Token (should fail)
+POST {{apiBase}}/auth/register/
+Content-Type: application/json
+
+{
+  "username": "expireduser",
+  "password": "testpass123",
+  "password2": "testpass123",
+  "email": "expired@example.com",
+  "first_name": "Expired",
+  "last_name": "User",
+  "token_registrasi": "EXPIRED_TOKEN"
+}
+
+###
+# 🔐 ENHANCED AUTHENTICATION
+###
+
+### Login User (Enhanced)
+POST {{apiBase}}/auth/login/
+Content-Type: application/json
+
+{
+  "username": "alphauser",
+  "password": "testpass123"
+}
+
+### Login with Invalid Credentials
+POST {{apiBase}}/auth/login/
+Content-Type: application/json
+
+{
+  "username": "wronguser",
+  "password": "wrongpass"
+}
+
+### Get User Profile (with Token Info)
+GET {{apiBase}}/auth/profile/
+Authorization: Bearer {{accessToken}}
+
+### Update User Profile
+PUT {{apiBase}}/auth/profile/
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "first_name": "Alpha Updated",
+  "last_name": "Tester Updated",
+  "phone": "+6281234567891",
+  "email": "alpha.updated@example.com"
+}
+
+### Logout User (Enhanced)
+POST {{apiBase}}/auth/logout/
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "refresh": "{{refreshToken}}"
+}
+
+###
+# 👤 ADMIN TOKEN MANAGEMENT
+###
+
+### Get Token Statistics (Admin Only)
+GET {{apiBase}}/auth/token-stats/
+Authorization: Bearer {{accessToken}}
+
+###
+# 🧪 EDGE CASES & VALIDATION
+###
+
+### Test Registration with Missing Fields
+POST {{apiBase}}/auth/register/
+Content-Type: application/json
+
+{
+  "username": "incomplete",
+  "password": "testpass123",
+  "token_registrasi": "ALPHA2025"
+}
+
+### Test Registration with Weak Password
+POST {{apiBase}}/auth/register/
+Content-Type: application/json
+
+{
+  "username": "weakpass",
+  "password": "123",
+  "password2": "123",
+  "email": "weak@example.com",
+  "first_name": "Weak",
+  "last_name": "Password",
+  "token_registrasi": "ALPHA2025"
+}
+
+### Test Registration with Mismatched Passwords
+POST {{apiBase}}/auth/register/
+Content-Type: application/json
+
+{
+  "username": "mismatch",
+  "password": "testpass123",
+  "password2": "different123",
+  "email": "mismatch@example.com",
+  "first_name": "Password",
+  "last_name": "Mismatch",
+  "token_registrasi": "ALPHA2025"
+}
+
+### Test Registration with Duplicate Username
+POST {{apiBase}}/auth/register/
+Content-Type: application/json
+
+{
+  "username": "alphauser",
+  "password": "testpass123",
+  "password2": "testpass123",
+  "email": "duplicate@example.com",
+  "first_name": "Duplicate",
+  "last_name": "User",
+  "token_registrasi": "ALPHA2025"
+}
+
+### Test Registration with Duplicate Email
+POST {{apiBase}}/auth/register/
+Content-Type: application/json
+
+{
+  "username": "duplicateemail",
+  "password": "testpass123",
+  "password2": "testpass123",
+  "email": "alpha@example.com",
+  "first_name": "Duplicate",
+  "last_name": "Email",
+  "token_registrasi": "ALPHA2025"
+}
+
+###
+# 🔒 SECURITY TESTS
+###
+
+### Test Access without Authentication
+GET {{apiBase}}/auth/profile/
+
+### Test Admin Endpoint without Admin Rights
+GET {{apiBase}}/auth/token-stats/
+Authorization: Bearer {{accessToken}}
+
+### Test Token Validation with Empty Token
+POST {{apiBase}}/auth/validate-token/
+Content-Type: application/json
+
+{
+  "token_code": ""
+}
+
+### Test SQL Injection Attempt in Token
+POST {{apiBase}}/auth/validate-token/
+Content-Type: application/json
+
+{
+  "token_code": "'; DROP TABLE reg_tokens; --"
+}
+
+###
+# 📝 SAMPLE TOKEN CREATION (for testing)
+###
+
+# NOTE: These need to be created via Django Admin
+# Sample tokens to create manually:
+
+# Token 1:
+# - Name: "Alpha Testers"
+# - Code: "ALPHA2025"
+# - Max Usage: 50
+# - Active: True
+
+# Token 2:
+# - Name: "Beta Testers"
+# - Code: "BETA2025"
+# - Max Usage: 100
+# - Active: True
+
+# Token 3:
+# - Name: "VIP Early Access"
+# - Code: "VIP2025"
+# - Max Usage: 10
+# - Active: True
+
+# Token 4:
+# - Name: "Expired Token"
+# - Code: "EXPIRED_TOKEN"
+# - Max Usage: 10
+# - Active: False
+# - Expires: Yesterday
+
+###
+# 🧹 ADMIN PANEL TESTS
+###
+
+# Access admin panel at: http://localhost:8000/admin/
+# 1. Login as superuser
+# 2. Go to "Registration Tokens"
+# 3. Create new tokens with different settings
+# 4. Monitor usage statistics
+# 5. View registered users per token
+
+###
+# 📊 WORKFLOW TESTING
+###
+
+# Complete registration workflow:
+# 1. Get registration info -> Should require token
+# 2. Validate token -> Should return token details
+# 3. Register with token -> Should succeed and auto-login
+# 4. Login -> Should work with new credentials
+# 5. View profile -> Should show registration token info
+# 6. Check admin stats -> Should show token usage
+
+###
+# 🎯 SUCCESS CRITERIA
+###
+
+# ✅ Registration requires valid token
+# ✅ Invalid tokens are rejected
+# ✅ Expired tokens are rejected
+# ✅ Used tokens increment usage counter
+# ✅ Token usage limits are enforced
+# ✅ Admin can monitor token statistics
+# ✅ Users can see their registration token info
+# ✅ Security validations work properly
+# ✅ Error messages are user-friendly
+
+###

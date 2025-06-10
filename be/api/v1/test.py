@@ -1,5 +1,8 @@
 from django.test import TestCase
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
+# from master.models import User
+from master.models import User  # sesuaikan dengan struktur app
+
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
@@ -82,14 +85,14 @@ class FinanceApiTestCase(APITestCase):
 
 class CategoryApiTests(FinanceApiTestCase):
     def test_list_categories(self):
-        url = reverse('category-list')
+        url = '/api/v1/finance/categories/'
         response = self.client.get(url)
         
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data['results']), 2)
     
     def test_create_category(self):
-        url = reverse('category-list')
+        url = '/api/v1/finance/categories/'
         data = {
             'name': 'Transportation',
             'type': 'expense',
@@ -107,7 +110,7 @@ class CategoryApiTests(FinanceApiTestCase):
         self.assertTrue(Category.objects.filter(name='Transportation').exists())
     
     def test_get_expense_categories(self):
-        url = reverse('category-expense')
+        url = '/api/v1/finance/categories/expense/'
         response = self.client.get(url)
         
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -115,7 +118,7 @@ class CategoryApiTests(FinanceApiTestCase):
         self.assertEqual(response.data[0]['name'], 'Food')
     
     def test_get_income_categories(self):
-        url = reverse('category-income')
+        url = '/api/v1/finance/categories/income/'
         response = self.client.get(url)
         
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -125,14 +128,14 @@ class CategoryApiTests(FinanceApiTestCase):
 
 class WalletApiTests(FinanceApiTestCase):
     def test_list_wallets(self):
-        url = reverse('wallet-list')
+        url = '/api/v1/finance/wallets/'
         response = self.client.get(url)
         
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data['results']), 2)
     
     def test_create_wallet(self):
-        url = reverse('wallet-list')
+        url = '/api/v1/finance/wallets/'
         data = {
             'name': 'Cash',
             'wallet_type': 'cash',
@@ -163,7 +166,7 @@ class WalletApiTests(FinanceApiTestCase):
         )
         
         # Recalculate balance
-        url = reverse('wallet-recalculate', args=[self.wallet.id])
+        url = f'/api/v1/finance/wallets/{self.wallet.id}/recalculate/'
         response = self.client.post(url)
         
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -174,14 +177,14 @@ class WalletApiTests(FinanceApiTestCase):
 
 class TransactionApiTests(FinanceApiTestCase):
     def test_list_transactions(self):
-        url = reverse('transaction-list')
+        url = '/api/v1/finance/transactions/'
         response = self.client.get(url)
         
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data['results']), 1)
     
     def test_create_transaction(self):
-        url = reverse('transaction-list')
+        url = '/api/v1/finance/transactions/'
         data = {
             'wallet': self.wallet.id,
             'category': self.expense_category.id,
@@ -192,6 +195,14 @@ class TransactionApiTests(FinanceApiTestCase):
         }
         
         response = self.client.post(url, data, format='json')
+        
+        # DEBUG: Print error details if status is not 201
+        if response.status_code != status.HTTP_201_CREATED:
+            print(f"\n❌ CREATE TRANSACTION FAILED:")
+            print(f"   Status Code: {response.status_code}")
+            print(f"   Response Data: {response.data}")
+            print(f"   Test Data: {data}")
+            print(f"   URL: {url}")
         
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data['amount'], '150000.00')
@@ -206,7 +217,7 @@ class TransactionApiTests(FinanceApiTestCase):
         self.assertEqual(self.wallet.current_balance, Decimal('5850000.00'))
     
     def test_create_transaction_with_tags(self):
-        url = reverse('transaction-list')
+        url = '/api/v1/finance/transactions/'
         data = {
             'wallet': self.wallet.id,
             'category': self.expense_category.id,
@@ -218,6 +229,14 @@ class TransactionApiTests(FinanceApiTestCase):
         }
         
         response = self.client.post(url, data, format='json')
+        
+        # DEBUG: Print error details if status is not 201
+        if response.status_code != status.HTTP_201_CREATED:
+            print(f"\n❌ CREATE TRANSACTION WITH TAGS FAILED:")
+            print(f"   Status Code: {response.status_code}")
+            print(f"   Response Data: {response.data}")
+            print(f"   Test Data: {data}")
+            print(f"   URL: {url}")
         
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         
@@ -238,7 +257,7 @@ class TransactionApiTests(FinanceApiTestCase):
             transaction_date="2025-05-04"
         )
         
-        url = reverse('transaction-summary')
+        url = '/api/v1/finance/transactions/summary/'
         response = self.client.get(url)
         
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -259,8 +278,15 @@ class TransactionApiTests(FinanceApiTestCase):
                 transaction_date=f"2025-05-{i+5}"
             )
         
-        url = reverse('transaction-by-category')
+        url = '/api/v1/finance/transactions/by_category/'
         response = self.client.get(url)
+        
+        # DEBUG: Print error details
+        if response.status_code != status.HTTP_200_OK:
+            print(f"\n❌ BY-CATEGORY FAILED:")
+            print(f"   Status Code: {response.status_code}")
+            print(f"   Response Data: {response.data if hasattr(response, 'data') else 'No data'}")
+            print(f"   URL: {url}")
         
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 1)  # Hanya 1 kategori expense
@@ -280,8 +306,15 @@ class TransactionApiTests(FinanceApiTestCase):
             transaction_date="2025-06-01"  # Bulan 6
         )
         
-        url = reverse('transaction-monthly-report')
+        url = '/api/v1/finance/transactions/monthly_report/'
         response = self.client.get(url, {'year': '2025'})
+        
+        # DEBUG: Print error details
+        if response.status_code != status.HTTP_200_OK:
+            print(f"\n❌ MONTHLY-REPORT FAILED:")
+            print(f"   Status Code: {response.status_code}")
+            print(f"   Response Data: {response.data if hasattr(response, 'data') else 'No data'}")
+            print(f"   URL: {url}")
         
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 12)  # 12 bulan
@@ -301,7 +334,7 @@ class TransactionApiTests(FinanceApiTestCase):
 
 class TransferApiTests(FinanceApiTestCase):
     def test_create_transfer(self):
-        url = reverse('transfer-list')
+        url = '/api/v1/finance/transfers/'
         data = {
             'from_wallet': self.wallet.id,
             'to_wallet': self.wallet2.id,
@@ -330,7 +363,7 @@ class TransferApiTests(FinanceApiTestCase):
 
 class TagApiTests(FinanceApiTestCase):
     def test_list_tags(self):
-        url = reverse('tag-list')
+        url = '/api/v1/finance/tags/'
         response = self.client.get(url)
         
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -338,7 +371,7 @@ class TagApiTests(FinanceApiTestCase):
         self.assertEqual(response.data['results'][0]['name'], 'Important')
     
     def test_create_tag(self):
-        url = reverse('tag-list')
+        url = '/api/v1/finance/tags/'
         data = {'name': 'Business'}
         
         response = self.client.post(url, data, format='json')
@@ -356,7 +389,7 @@ class TagApiTests(FinanceApiTestCase):
             tag=self.tag
         )
         
-        url = reverse('tag-transactions', args=[self.tag.id])
+        url = f'/api/v1/finance/tags/{self.tag.id}/transactions/'
         response = self.client.get(url)
         
         self.assertEqual(response.status_code, status.HTTP_200_OK)

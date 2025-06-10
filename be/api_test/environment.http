@@ -1,0 +1,27 @@
+# API Testing Environment Variables
+# Copy this file to .env dan sesuaikan dengan environment Anda
+
+# Base URL untuk development
+@baseUrl = http://localhost:8000
+@apiVersion = v1
+
+# Authentication tokens (akan diisi setelah login)
+@accessToken = your_access_token_here
+@refreshToken = your_refresh_token_here
+
+# Test user credentials
+@testUsername = testuser
+@testPassword = testpass123
+@testEmail = test@example.com
+
+# Test data IDs (akan diupdate setelah create data)
+@testWalletId = wallet_id_here
+@testCategoryId = category_id_here
+@testTransactionId = transaction_id_here
+@testPortfolioId = portfolio_id_here
+@testAssetId = asset_id_here
+@testHoldingId = holding_id_here
+
+# Common headers
+@contentType = application/json
+@authHeader = Bearer {{accessToken}}

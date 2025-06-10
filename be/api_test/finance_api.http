@@ -1,0 +1,506 @@
+###
+# Finance Module API Testing
+# Test semua endpoint untuk modul Finance (Manajemen Keuangan)
+###
+
+@baseUrl = http://localhost:8000
+@apiBase = {{baseUrl}}/api/v1
+
+# Variables (update sesuai response)
+@accessToken = your_access_token_here
+@testWalletId = 
+@testCategoryId = 
+@testTransactionId = 
+@testTransferId = 
+@testTagId = 
+
+###
+# 🔐 AUTHENTICATION
+###
+
+### Register User (with Registration Token)
+POST {{apiBase}}/auth/register/
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "password": "testpass123",
+  "password2": "testpass123",
+  "email": "test@example.com",
+  "first_name": "Test",
+  "last_name": "User",
+  "token_registrasi": "ALPHA2025"
+}
+
+### Login User
+POST {{apiBase}}/auth/login/
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "password": "testpass123"
+}
+
+### Get User Profile
+GET {{apiBase}}/auth/profile/
+Authorization: Bearer {{accessToken}}
+
+###
+# 💰 WALLET MANAGEMENT
+###
+
+### List All Wallets
+GET {{apiBase}}/finance/wallets/
+Authorization: Bearer {{accessToken}}
+
+### List Wallets with Filters
+GET {{apiBase}}/finance/wallets/?is_active=true&wallet_type=bank&ordering=-current_balance
+Authorization: Bearer {{accessToken}}
+
+### Create New Wallet - Bank Account
+POST {{apiBase}}/finance/wallets/
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "name": "BCA Savings",
+  "wallet_type": "bank",
+  "currency": "IDR",
+  "initial_balance": "5000000.00",
+  "is_active": true
+}
+
+### Create New Wallet - E-Wallet
+POST {{apiBase}}/finance/wallets/
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "name": "GoPay",
+  "wallet_type": "ewallet",
+  "currency": "IDR",
+  "initial_balance": "500000.00",
+  "is_active": true
+}
+
+### Create New Wallet - Cash
+POST {{apiBase}}/finance/wallets/
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "name": "Cash Wallet",
+  "wallet_type": "cash",
+  "currency": "IDR",
+  "initial_balance": "1000000.00",
+  "is_active": true
+}
+
+### Get Wallet Detail
+GET {{apiBase}}/finance/wallets/{{testWalletId}}/
+Authorization: Bearer {{accessToken}}
+
+### Update Wallet
+PUT {{apiBase}}/finance/wallets/{{testWalletId}}/
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "name": "BCA Savings - Updated",
+  "wallet_type": "bank",
+  "currency": "IDR",
+  "initial_balance": "5000000.00",
+  "is_active": true
+}
+
+### Recalculate Wallet Balance
+POST {{apiBase}}/finance/wallets/{{testWalletId}}/recalculate/
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{}
+
+### Get Wallet Types (Choices)
+GET {{apiBase}}/finance/wallets/choices/
+Authorization: Bearer {{accessToken}}
+
+###
+# 🏷️ CATEGORY MANAGEMENT
+###
+
+### List All Categories
+GET {{apiBase}}/finance/categories/
+Authorization: Bearer {{accessToken}}
+
+### Get Income Categories Only
+GET {{apiBase}}/finance/categories/income/
+Authorization: Bearer {{accessToken}}
+
+### Get Expense Categories Only
+GET {{apiBase}}/finance/categories/expense/
+Authorization: Bearer {{accessToken}}
+
+### Create Income Category
+POST {{apiBase}}/finance/categories/
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "name": "Salary",
+  "type": "income",
+  "icon": "salary",
+  "color": "#4CAF50"
+}
+
+### Create Expense Categories
+POST {{apiBase}}/finance/categories/
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "name": "Food & Beverages",
+  "type": "expense",
+  "icon": "restaurant",
+  "color": "#FF9800"
+}
+
+### Create More Expense Categories
+POST {{apiBase}}/finance/categories/
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "name": "Transportation",
+  "type": "expense",
+  "icon": "directions_car",
+  "color": "#2196F3"
+}
+
+### Create Shopping Category
+POST {{apiBase}}/finance/categories/
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "name": "Shopping",
+  "type": "expense",
+  "icon": "shopping_cart",
+  "color": "#E91E63"
+}
+
+### Get Category Detail
+GET {{apiBase}}/finance/categories/{{testCategoryId}}/
+Authorization: Bearer {{accessToken}}
+
+### Update Category
+PUT {{apiBase}}/finance/categories/{{testCategoryId}}/
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "name": "Food & Dining",
+  "type": "expense",
+  "icon": "restaurant",
+  "color": "#FF9800"
+}
+
+###
+# 🏷️ TAG MANAGEMENT
+###
+
+### List All Tags
+GET {{apiBase}}/finance/tags/
+Authorization: Bearer {{accessToken}}
+
+### Create Tags
+POST {{apiBase}}/finance/tags/
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "name": "business"
+}
+
+### Create More Tags
+POST {{apiBase}}/finance/tags/
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "name": "personal"
+}
+
+### Create Work Tag
+POST {{apiBase}}/finance/tags/
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "name": "work"
+}
+
+### Get Tag Detail
+GET {{apiBase}}/finance/tags/{{testTagId}}/
+Authorization: Bearer {{accessToken}}
+
+### Get Transactions by Tag
+GET {{apiBase}}/finance/tags/{{testTagId}}/transactions/
+Authorization: Bearer {{accessToken}}
+
+###
+# 💸 TRANSACTION MANAGEMENT
+###
+
+### List All Transactions
+GET {{apiBase}}/finance/transactions/
+Authorization: Bearer {{accessToken}}
+
+### List Transactions with Filters
+GET {{apiBase}}/finance/transactions/?wallet={{testWalletId}}&type=expense&start_date=2025-01-01&ordering=-transaction_date
+Authorization: Bearer {{accessToken}}
+
+### Create Income Transaction
+POST {{apiBase}}/finance/transactions/
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "wallet": {{testWalletId}},
+  "category": {{testCategoryId}},
+  "amount": "8000000.00",
+  "type": "income",
+  "description": "Monthly salary",
+  "transaction_date": "2025-06-01",
+  "tag_ids": [{{testTagId}}]
+}
+
+### Create Expense Transaction - Food
+POST {{apiBase}}/finance/transactions/
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "wallet": {{testWalletId}},
+  "category": {{testCategoryId}},
+  "amount": "150000.00",
+  "type": "expense",
+  "description": "Lunch at restaurant",
+  "transaction_date": "2025-06-01",
+  "tag_ids": []
+}
+
+### Create Expense Transaction - Transportation
+POST {{apiBase}}/finance/transactions/
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "wallet": {{testWalletId}},
+  "category": {{testCategoryId}},
+  "amount": "50000.00",
+  "type": "expense",
+  "description": "Ojek online",
+  "transaction_date": "2025-06-01",
+  "tag_ids": []
+}
+
+### Create Expense Transaction - Shopping
+POST {{apiBase}}/finance/transactions/
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "wallet": {{testWalletId}},
+  "category": {{testCategoryId}},
+  "amount": "300000.00",
+  "type": "expense",
+  "description": "Groceries",
+  "transaction_date": "2025-06-02",
+  "tag_ids": []
+}
+
+### Get Transaction Detail
+GET {{apiBase}}/finance/transactions/{{testTransactionId}}/
+Authorization: Bearer {{accessToken}}
+
+### Update Transaction
+PUT {{apiBase}}/finance/transactions/{{testTransactionId}}/
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "wallet": {{testWalletId}},
+  "category": {{testCategoryId}},
+  "amount": "175000.00",
+  "type": "expense",
+  "description": "Lunch at fancy restaurant",
+  "transaction_date": "2025-06-01",
+  "tag_ids": []
+}
+
+### Get Transaction Summary
+GET {{apiBase}}/finance/transactions/summary/
+Authorization: Bearer {{accessToken}}
+
+### Get Transaction Summary with Filters
+GET {{apiBase}}/finance/transactions/summary/?wallet={{testWalletId}}&start_date=2025-06-01&end_date=2025-06-30
+Authorization: Bearer {{accessToken}}
+
+### Get Transactions by Category
+GET {{apiBase}}/finance/transactions/by_category/?type=expense
+Authorization: Bearer {{accessToken}}
+
+### Get Monthly Report
+GET {{apiBase}}/finance/transactions/monthly_report/?year=2025
+Authorization: Bearer {{accessToken}}
+
+### Get Monthly Report for Specific Wallet
+GET {{apiBase}}/finance/transactions/monthly_report/?year=2025&wallet={{testWalletId}}
+Authorization: Bearer {{accessToken}}
+
+###
+# 🔄 TRANSFER MANAGEMENT
+###
+
+### List All Transfers
+GET {{apiBase}}/finance/transfers/
+Authorization: Bearer {{accessToken}}
+
+### Create Transfer Between Wallets
+POST {{apiBase}}/finance/transfers/
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "from_wallet": {{testWalletId}},
+  "to_wallet": 2,
+  "amount": "500000.00",
+  "fee": "5000.00",
+  "description": "Transfer to GoPay"
+}
+
+### Get Transfer Detail
+GET {{apiBase}}/finance/transfers/{{testTransferId}}/
+Authorization: Bearer {{accessToken}}
+
+### Update Transfer
+PUT {{apiBase}}/finance/transfers/{{testTransferId}}/
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "from_wallet": {{testWalletId}},
+  "to_wallet": 2,
+  "amount": "600000.00",
+  "fee": "5000.00",
+  "description": "Transfer to GoPay - Updated"
+}
+
+###
+# 📊 ANALYTICS & REPORTING
+###
+
+### Search Transactions
+GET {{apiBase}}/finance/transactions/?search=restaurant
+Authorization: Bearer {{accessToken}}
+
+### Filter by Date Range
+GET {{apiBase}}/finance/transactions/?start_date=2025-06-01&end_date=2025-06-30
+Authorization: Bearer {{accessToken}}
+
+### Filter by Amount Range
+GET {{apiBase}}/finance/transactions/?min_amount=100000&max_amount=500000
+Authorization: Bearer {{accessToken}}
+
+### Multiple Filters Combined
+GET {{apiBase}}/finance/transactions/?wallet={{testWalletId}}&type=expense&category={{testCategoryId}}&start_date=2025-06-01&ordering=-amount
+Authorization: Bearer {{accessToken}}
+
+### Pagination Test
+GET {{apiBase}}/finance/transactions/?page=1&page_size=5
+Authorization: Bearer {{accessToken}}
+
+###
+# 🔍 SEARCH & FILTERS
+###
+
+### Search Wallets
+GET {{apiBase}}/finance/wallets/?search=BCA
+Authorization: Bearer {{accessToken}}
+
+### Search Categories
+GET {{apiBase}}/finance/categories/?search=food
+Authorization: Bearer {{accessToken}}
+
+### Search Tags
+GET {{apiBase}}/finance/tags/?search=work
+Authorization: Bearer {{accessToken}}
+
+###
+# ❌ ERROR HANDLING TESTS
+###
+
+### Test Invalid Wallet ID
+GET {{apiBase}}/finance/wallets/invalid-id/
+Authorization: Bearer {{accessToken}}
+
+### Test Unauthorized Access
+GET {{apiBase}}/finance/wallets/
+# No Authorization header
+
+### Test Invalid Transaction Data
+POST {{apiBase}}/finance/transactions/
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "wallet": 99999,
+  "amount": "invalid_amount",
+  "type": "invalid_type",
+  "transaction_date": "invalid_date"
+}
+
+### Test Transfer to Same Wallet
+POST {{apiBase}}/finance/transfers/
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "from_wallet": {{testWalletId}},
+  "to_wallet": {{testWalletId}},
+  "amount": "100000.00"
+}
+
+###
+# 🧹 CLEANUP (optional)
+###
+
+### Delete Transaction
+DELETE {{apiBase}}/finance/transactions/{{testTransactionId}}/
+Authorization: Bearer {{accessToken}}
+
+### Delete Transfer
+DELETE {{apiBase}}/finance/transfers/{{testTransferId}}/
+Authorization: Bearer {{accessToken}}
+
+### Delete Category
+DELETE {{apiBase}}/finance/categories/{{testCategoryId}}/
+Authorization: Bearer {{accessToken}}
+
+### Delete Tag
+DELETE {{apiBase}}/finance/tags/{{testTagId}}/
+Authorization: Bearer {{accessToken}}
+
+### Delete Wallet
+DELETE {{apiBase}}/finance/wallets/{{testWalletId}}/
+Authorization: Bearer {{accessToken}}
+
+###
+# 📝 NOTES
+###
+# 1. Update variables (@testWalletId, etc.) setelah create data
+# 2. Run authentication endpoints dulu untuk mendapatkan token
+# 3. Test error scenarios untuk memastikan validation bekerja
+# 4. Gunakan Ctrl+Shift+P > "Rest Client: Send Request" di VS Code
+# 5. Lihat Response tab untuk melihat hasil dan update variables
+###

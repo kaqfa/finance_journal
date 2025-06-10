@@ -1,0 +1,813 @@
+###
+# Investment Module API Testing
+# Test semua endpoint untuk modul Investment (Portfolio Tracking)
+###
+
+@baseUrl = http://localhost:8000
+@apiBase = {{baseUrl}}/api/v1
+
+# Variables (update sesuai response)
+@accessToken = your_access_token_here
+@testAssetId = 
+@testPortfolioId = 
+@testTransactionId = 
+@testHoldingId = 
+
+###
+# 🔐 AUTHENTICATION (same as finance)
+###
+
+### Register User (with Registration Token)
+POST {{apiBase}}/auth/register/
+Content-Type: application/json
+
+{
+  "username": "investuser",
+  "password": "investpass123",
+  "password2": "investpass123",
+  "email": "invest@example.com",
+  "first_name": "Investment",
+  "last_name": "User",
+  "token_registrasi": "ALPHA2025"
+}
+
+### Login User
+POST {{apiBase}}/auth/login/
+Content-Type: application/json
+
+{
+  "username": "investuser",
+  "password": "investpass123"
+}
+
+###
+# 📈 ASSET MANAGEMENT (Master Data)
+###
+
+### List All Assets
+GET {{apiBase}}/invest/assets/
+Authorization: Bearer {{accessToken}}
+
+### List Assets with Filters
+GET {{apiBase}}/invest/assets/?type=stock&sector=Banking&currency=IDR&ordering=symbol
+Authorization: Bearer {{accessToken}}
+
+### Create New Asset - Stock BBRI
+POST {{apiBase}}/invest/assets/
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "symbol": "BBRI",
+  "name": "Bank Rakyat Indonesia Tbk",
+  "type": "stock",
+  "exchange": "IDX",
+  "sector": "Banking",
+  "currency": "IDR",
+  "is_active": true
+}
+
+### Create New Asset - Stock BBCA
+POST {{apiBase}}/invest/assets/
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "symbol": "BBCA",
+  "name": "Bank Central Asia Tbk",
+  "type": "stock",
+  "exchange": "IDX",
+  "sector": "Banking",
+  "currency": "IDR",
+  "is_active": true
+}
+
+### Create New Asset - Crypto Bitcoin
+POST {{apiBase}}/invest/assets/
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "symbol": "BTC",
+  "name": "Bitcoin",
+  "type": "crypto",
+  "exchange": "Binance",
+  "sector": "Cryptocurrency",
+  "currency": "USD",
+  "is_active": true
+}
+
+### Create New Asset - REIT
+POST {{apiBase}}/invest/assets/
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "symbol": "KPIG",
+  "name": "MNC Land Tbk",
+  "type": "reit",
+  "exchange": "IDX",
+  "sector": "Real Estate",
+  "currency": "IDR",
+  "is_active": true
+}
+
+### Get Asset Detail
+GET {{apiBase}}/invest/assets/{{testAssetId}}/
+Authorization: Bearer {{accessToken}}
+
+### Update Asset
+PUT {{apiBase}}/invest/assets/{{testAssetId}}/
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "symbol": "BBRI",
+  "name": "Bank Rakyat Indonesia Tbk - Updated",
+  "type": "stock",
+  "exchange": "IDX",
+  "sector": "Banking",
+  "currency": "IDR",
+  "is_active": true
+}
+
+### Search Assets
+GET {{apiBase}}/invest/assets/search/?q=BBRI&limit=5
+Authorization: Bearer {{accessToken}}
+
+### Search Assets by Name
+GET {{apiBase}}/invest/assets/search/?q=Bank&limit=10
+Authorization: Bearer {{accessToken}}
+
+### Get Asset Price History
+GET {{apiBase}}/invest/assets/{{testAssetId}}/prices/?days=30&interval=daily
+Authorization: Bearer {{accessToken}}
+
+### Get Asset Price History - Weekly
+GET {{apiBase}}/invest/assets/{{testAssetId}}/prices/?days=90&interval=weekly
+Authorization: Bearer {{accessToken}}
+
+### Add Price Data (Admin/System Only)
+POST {{apiBase}}/invest/assets/{{testAssetId}}/add_price/
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "price": "4750.00",
+  "volume": "1500000.00",
+  "market_cap": "550000000000.00",
+  "source": "manual_test"
+}
+
+### Add More Price Data
+POST {{apiBase}}/invest/assets/{{testAssetId}}/add_price/
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "price": "4800.00",
+  "volume": "1800000.00",
+  "source": "manual_test"
+}
+
+### Get Assets by Type
+GET {{apiBase}}/invest/assets/by_type/
+Authorization: Bearer {{accessToken}}
+
+### Get Asset Statistics
+GET {{apiBase}}/invest/assets/statistics/
+Authorization: Bearer {{accessToken}}
+
+### Get Asset Types (Choices)
+GET {{apiBase}}/invest/assets/choices/
+Authorization: Bearer {{accessToken}}
+
+###
+# 💼 PORTFOLIO MANAGEMENT
+###
+
+### List All Portfolios
+GET {{apiBase}}/invest/portfolios/
+Authorization: Bearer {{accessToken}}
+
+### List Portfolios with Filters
+GET {{apiBase}}/invest/portfolios/?is_active=true&risk_level=medium&ordering=-created_at
+Authorization: Bearer {{accessToken}}
+
+### Create Growth Portfolio
+POST {{apiBase}}/invest/portfolios/
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "name": "Growth Portfolio",
+  "description": "Long-term growth focused portfolio with high potential returns",
+  "initial_capital": "50000000.00",
+  "target_allocation": {
+    "stock": 70,
+    "crypto": 20,
+    "reit": 10
+  },
+  "risk_level": "high",
+  "is_active": true
+}
+
+### Create Conservative Portfolio
+POST {{apiBase}}/invest/portfolios/
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "name": "Conservative Portfolio",
+  "description": "Stable income focused portfolio with lower risk",
+  "initial_capital": "25000000.00",
+  "target_allocation": {
+    "stock": 40,
+    "bond": 50,
+    "reit": 10
+  },
+  "risk_level": "low",
+  "is_active": true
+}
+
+### Create Trading Portfolio
+POST {{apiBase}}/invest/portfolios/
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "name": "Trading Portfolio",
+  "description": "Active trading portfolio for short-term gains",
+  "initial_capital": "10000000.00",
+  "target_allocation": {
+    "stock": 80,
+    "crypto": 20
+  },
+  "risk_level": "high",
+  "is_active": true
+}
+
+### Get Portfolio Detail
+GET {{apiBase}}/invest/portfolios/{{testPortfolioId}}/
+Authorization: Bearer {{accessToken}}
+
+### Update Portfolio
+PUT {{apiBase}}/invest/portfolios/{{testPortfolioId}}/
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "name": "Growth Portfolio - Updated",
+  "description": "Updated long-term growth portfolio with balanced allocation",
+  "initial_capital": "50000000.00",
+  "target_allocation": {
+    "stock": 65,
+    "crypto": 25,
+    "reit": 10
+  },
+  "risk_level": "high",
+  "is_active": true
+}
+
+### Get Portfolio Performance
+GET {{apiBase}}/invest/portfolios/{{testPortfolioId}}/performance/?period=1Y
+Authorization: Bearer {{accessToken}}
+
+### Get Portfolio Performance - 3 Months
+GET {{apiBase}}/invest/portfolios/{{testPortfolioId}}/performance/?period=3M
+Authorization: Bearer {{accessToken}}
+
+### Get Portfolio Allocation
+GET {{apiBase}}/invest/portfolios/{{testPortfolioId}}/allocation/
+Authorization: Bearer {{accessToken}}
+
+### Get Portfolio Rebalancing Recommendations
+POST {{apiBase}}/invest/portfolios/{{testPortfolioId}}/rebalance/
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "max_deviation": 5.0
+}
+
+### Get Portfolio Rebalancing with Custom Target
+POST {{apiBase}}/invest/portfolios/{{testPortfolioId}}/rebalance/
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "target_allocation": {
+    "stock": 60,
+    "crypto": 30,
+    "reit": 10
+  },
+  "max_deviation": 3.0
+}
+
+### Get Portfolio Overview
+GET {{apiBase}}/invest/portfolios/overview/
+Authorization: Bearer {{accessToken}}
+
+### Get Risk Levels (Choices)
+GET {{apiBase}}/invest/portfolios/choices/
+Authorization: Bearer {{accessToken}}
+
+###
+# 💰 TRANSACTION MANAGEMENT
+###
+
+### List All Transactions
+GET {{apiBase}}/invest/transactions/
+Authorization: Bearer {{accessToken}}
+
+### List Transactions with Filters
+GET {{apiBase}}/invest/transactions/?portfolio={{testPortfolioId}}&transaction_type=buy&start_date=2025-01-01&ordering=-transaction_date
+Authorization: Bearer {{accessToken}}
+
+### Create Buy Transaction - BBRI
+POST {{apiBase}}/invest/transactions/
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "portfolio_id": "{{testPortfolioId}}",
+  "asset_id": "{{testAssetId}}",
+  "transaction_type": "buy",
+  "quantity": "1000.00000000",
+  "price": "4750.00",
+  "fees": "23750.00",
+  "transaction_date": "2025-06-01",
+  "broker": "Mandiri Sekuritas",
+  "notes": "First investment in BBRI"
+}
+
+### Create Buy Transaction - BBCA
+POST {{apiBase}}/invest/transactions/
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "portfolio_id": "{{testPortfolioId}}",
+  "asset_id": "{{testAssetId}}",
+  "transaction_type": "buy",
+  "quantity": "500.00000000",
+  "price": "8500.00",
+  "fees": "21250.00",
+  "transaction_date": "2025-06-02",
+  "broker": "Mandiri Sekuritas",
+  "notes": "Diversification into BBCA"
+}
+
+### Create Buy Transaction - Bitcoin
+POST {{apiBase}}/invest/transactions/
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "portfolio_id": "{{testPortfolioId}}",
+  "asset_id": "{{testAssetId}}",
+  "transaction_type": "buy",
+  "quantity": "0.10000000",
+  "price": "65000.00",
+  "fees": "32.50",
+  "transaction_date": "2025-06-03",
+  "broker": "Binance",
+  "notes": "Crypto allocation for portfolio"
+}
+
+### Create Sell Transaction - Partial BBRI
+POST {{apiBase}}/invest/transactions/
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "portfolio_id": "{{testPortfolioId}}",
+  "asset_id": "{{testAssetId}}",
+  "transaction_type": "sell",
+  "quantity": "200.00000000",
+  "price": "4900.00",
+  "fees": "9800.00",
+  "transaction_date": "2025-06-05",
+  "broker": "Mandiri Sekuritas",
+  "notes": "Partial profit taking"
+}
+
+### Create Dividend Transaction
+POST {{apiBase}}/invest/transactions/
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "portfolio_id": "{{testPortfolioId}}",
+  "asset_id": "{{testAssetId}}",
+  "transaction_type": "dividend",
+  "quantity": "800.00000000",
+  "price": "50.00",
+  "fees": "4000.00",
+  "transaction_date": "2025-06-10",
+  "broker": "Mandiri Sekuritas",
+  "notes": "Quarterly dividend payment"
+}
+
+### Create Stock Split Transaction
+POST {{apiBase}}/invest/transactions/
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "portfolio_id": "{{testPortfolioId}}",
+  "asset_id": "{{testAssetId}}",
+  "transaction_type": "split",
+  "quantity": "2.00000000",
+  "price": "1.00",
+  "fees": "0.00",
+  "transaction_date": "2025-06-15",
+  "broker": "Mandiri Sekuritas",
+  "notes": "Stock split 1:2 ratio"
+}
+
+### Get Transaction Detail
+GET {{apiBase}}/invest/transactions/{{testTransactionId}}/
+Authorization: Bearer {{accessToken}}
+
+### Update Transaction
+PUT {{apiBase}}/invest/transactions/{{testTransactionId}}/
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "portfolio_id": "{{testPortfolioId}}",
+  "asset_id": "{{testAssetId}}",
+  "transaction_type": "buy",
+  "quantity": "1100.00000000",
+  "price": "4750.00",
+  "fees": "26125.00",
+  "transaction_date": "2025-06-01",
+  "broker": "Mandiri Sekuritas",
+  "notes": "Updated quantity - larger position"
+}
+
+### Get Transaction Summary
+GET {{apiBase}}/invest/transactions/summary/
+Authorization: Bearer {{accessToken}}
+
+### Get Transaction Summary with Filters
+GET {{apiBase}}/invest/transactions/summary/?portfolio={{testPortfolioId}}&start_date=2025-06-01&end_date=2025-06-30
+Authorization: Bearer {{accessToken}}
+
+### Get Transactions by Asset
+GET {{apiBase}}/invest/transactions/by_asset/
+Authorization: Bearer {{accessToken}}
+
+### Get Transactions by Asset with Filters
+GET {{apiBase}}/invest/transactions/by_asset/?portfolio={{testPortfolioId}}&asset={{testAssetId}}
+Authorization: Bearer {{accessToken}}
+
+### Get Monthly Transaction Report
+GET {{apiBase}}/invest/transactions/monthly_report/?year=2025
+Authorization: Bearer {{accessToken}}
+
+### Get Monthly Report for Specific Portfolio
+GET {{apiBase}}/invest/transactions/monthly_report/?year=2025&portfolio={{testPortfolioId}}
+Authorization: Bearer {{accessToken}}
+
+### Bulk Create Transactions
+POST {{apiBase}}/invest/transactions/bulk_create/
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "transactions": [
+    {
+      "portfolio_id": "{{testPortfolioId}}",
+      "asset_id": "{{testAssetId}}",
+      "transaction_type": "buy",
+      "quantity": "300.00000000",
+      "price": "4600.00",
+      "fees": "6900.00",
+      "transaction_date": "2025-05-15",
+      "broker": "Mandiri Sekuritas",
+      "notes": "Bulk import - batch 1"
+    },
+    {
+      "portfolio_id": "{{testPortfolioId}}",
+      "asset_id": "{{testAssetId}}",
+      "transaction_type": "buy",
+      "quantity": "500.00000000",
+      "price": "4550.00",
+      "fees": "11375.00",
+      "transaction_date": "2025-05-20",
+      "broker": "Mandiri Sekuritas",
+      "notes": "Bulk import - batch 2"
+    }
+  ],
+  "validate_only": false
+}
+
+### Bulk Validate Only (Test without Creating)
+POST {{apiBase}}/invest/transactions/bulk_create/
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "transactions": [
+    {
+      "portfolio_id": "{{testPortfolioId}}",
+      "asset_id": "{{testAssetId}}",
+      "transaction_type": "buy",
+      "quantity": "100.00000000",
+      "price": "4700.00",
+      "fees": "2350.00",
+      "transaction_date": "2025-06-20",
+      "broker": "Test Broker"
+    }
+  ],
+  "validate_only": true
+}
+
+### Export Transactions to CSV
+GET {{apiBase}}/invest/transactions/export/
+Authorization: Bearer {{accessToken}}
+
+### Export Transactions with Filters
+GET {{apiBase}}/invest/transactions/export/?portfolio={{testPortfolioId}}&start_date=2025-01-01&end_date=2025-12-31
+Authorization: Bearer {{accessToken}}
+
+### Get Transaction Types (Choices)
+GET {{apiBase}}/invest/transactions/choices/
+Authorization: Bearer {{accessToken}}
+
+###
+# 📊 HOLDINGS MANAGEMENT (Read-Only)
+###
+
+### List All Holdings
+GET {{apiBase}}/invest/holdings/
+Authorization: Bearer {{accessToken}}
+
+### List Holdings with Filters
+GET {{apiBase}}/invest/holdings/?portfolio={{testPortfolioId}}&asset_type=stock&profitable_only=true&ordering=-current_value
+Authorization: Bearer {{accessToken}}
+
+### Get Holdings by Portfolio
+GET {{apiBase}}/invest/holdings/by_portfolio/
+Authorization: Bearer {{accessToken}}
+
+### Get Holding Detail
+GET {{apiBase}}/invest/holdings/{{testHoldingId}}/
+Authorization: Bearer {{accessToken}}
+
+### Refresh Holdings with Current Prices
+POST {{apiBase}}/invest/holdings/refresh/
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "portfolio_ids": ["{{testPortfolioId}}"],
+  "force_update": true
+}
+
+### Refresh All Holdings
+POST {{apiBase}}/invest/holdings/refresh/
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "force_update": false
+}
+
+###
+# 📈 ANALYTICS & INSIGHTS
+###
+
+### Get Investment Analytics Overview
+GET {{apiBase}}/invest/holdings/analytics/
+Authorization: Bearer {{accessToken}}
+
+### Get Diversification Analysis
+GET {{apiBase}}/invest/holdings/diversification/
+Authorization: Bearer {{accessToken}}
+
+### Get Performance Analysis
+GET {{apiBase}}/invest/holdings/performance/?period=1Y
+Authorization: Bearer {{accessToken}}
+
+### Get Performance Analysis - 6 Months
+GET {{apiBase}}/invest/holdings/performance/?period=6M
+Authorization: Bearer {{accessToken}}
+
+### Get Performance Analysis - All Time
+GET {{apiBase}}/invest/holdings/performance/?period=ALL
+Authorization: Bearer {{accessToken}}
+
+###
+# 🔍 ADVANCED FILTERING & SEARCH
+###
+
+### Search Assets by Symbol
+GET {{apiBase}}/invest/assets/?search=BBRI
+Authorization: Bearer {{accessToken}}
+
+### Search Portfolios by Name
+GET {{apiBase}}/invest/portfolios/?search=Growth
+Authorization: Bearer {{accessToken}}
+
+### Search Transactions by Notes
+GET {{apiBase}}/invest/transactions/?search=dividend
+Authorization: Bearer {{accessToken}}
+
+### Filter Assets by Multiple Criteria
+GET {{apiBase}}/invest/assets/?type=stock&exchange=IDX&currency=IDR&sector=Banking&ordering=symbol
+Authorization: Bearer {{accessToken}}
+
+### Filter Portfolios by Value Range
+GET {{apiBase}}/invest/portfolios/?min_value=10000000&max_value=100000000&risk_level=high
+Authorization: Bearer {{accessToken}}
+
+### Filter Transactions by Date Range and Type
+GET {{apiBase}}/invest/transactions/?start_date=2025-06-01&end_date=2025-06-30&transaction_type=buy&min_amount=1000000
+Authorization: Bearer {{accessToken}}
+
+### Filter Holdings by Value and Performance
+GET {{apiBase}}/invest/holdings/?min_value=500000&profitable_only=true&asset_type=stock
+Authorization: Bearer {{accessToken}}
+
+### Complex Multi-Filter Query
+GET {{apiBase}}/invest/transactions/?portfolio={{testPortfolioId}}&asset={{testAssetId}}&transaction_type=buy&start_date=2025-01-01&broker=Mandiri&ordering=-transaction_date&page_size=10
+Authorization: Bearer {{accessToken}}
+
+###
+# 📊 PAGINATION TESTS
+###
+
+### Test Pagination - First Page
+GET {{apiBase}}/invest/assets/?page=1&page_size=5
+Authorization: Bearer {{accessToken}}
+
+### Test Pagination - Second Page
+GET {{apiBase}}/invest/assets/?page=2&page_size=5
+Authorization: Bearer {{accessToken}}
+
+### Test Large Page Size
+GET {{apiBase}}/invest/transactions/?page_size=50
+Authorization: Bearer {{accessToken}}
+
+### Test Ordering with Pagination
+GET {{apiBase}}/invest/portfolios/?ordering=-created_at&page=1&page_size=3
+Authorization: Bearer {{accessToken}}
+
+###
+# ❌ ERROR HANDLING & EDGE CASES
+###
+
+### Test Invalid Asset ID
+GET {{apiBase}}/invest/assets/invalid-uuid/
+Authorization: Bearer {{accessToken}}
+
+### Test Invalid Portfolio ID
+GET {{apiBase}}/invest/portfolios/00000000-0000-0000-0000-000000000000/
+Authorization: Bearer {{accessToken}}
+
+### Test Unauthorized Access
+GET {{apiBase}}/invest/portfolios/
+# No Authorization header
+
+### Test Invalid Transaction Data
+POST {{apiBase}}/invest/transactions/
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "portfolio_id": "invalid-uuid",
+  "asset_id": "invalid-uuid",
+  "transaction_type": "invalid_type",
+  "quantity": "invalid_number",
+  "price": "invalid_price",
+  "transaction_date": "invalid_date"
+}
+
+### Test Sell More Than Holdings
+POST {{apiBase}}/invest/transactions/
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "portfolio_id": "{{testPortfolioId}}",
+  "asset_id": "{{testAssetId}}",
+  "transaction_type": "sell",
+  "quantity": "999999.00000000",
+  "price": "4800.00",
+  "transaction_date": "2025-06-01"
+}
+
+### Test Invalid Portfolio Ownership
+POST {{apiBase}}/invest/transactions/
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "portfolio_id": "00000000-0000-0000-0000-000000000001",
+  "asset_id": "{{testAssetId}}",
+  "transaction_type": "buy",
+  "quantity": "100.00000000",
+  "price": "4800.00",
+  "transaction_date": "2025-06-01"
+}
+
+### Test Invalid Asset Reference
+POST {{apiBase}}/invest/transactions/
+Authorization: Bearer {{accessToken}}
+Content-Type: application/json
+
+{
+  "portfolio_id": "{{testPortfolioId}}",
+  "asset_id": "00000000-0000-0000-0000-000000000001",
+  "transaction_type": "buy",
+  "quantity": "100.00000000",
+  "price": "4800.00",
+  "transaction_date": "2025-06-01"
+}
+
+### Test Invalid Date Format
+GET {{apiBase}}/invest/transactions/?start_date=invalid-date&end_date=2025-12-31
+Authorization: Bearer {{accessToken}}
+
+### Test Invalid Numeric Filters
+GET {{apiBase}}/invest/holdings/?min_value=invalid_number&max_value=not_a_number
+Authorization: Bearer {{accessToken}}
+
+### Test SQL Injection Attempt
+GET {{apiBase}}/invest/assets/?search='; DROP TABLE invest_asset; --
+Authorization: Bearer {{accessToken}}
+
+###
+# 🧹 CLEANUP OPERATIONS (optional)
+###
+
+### Delete Transaction
+DELETE {{apiBase}}/invest/transactions/{{testTransactionId}}/
+Authorization: Bearer {{accessToken}}
+
+### Delete Portfolio (will fail if has holdings/transactions)
+DELETE {{apiBase}}/invest/portfolios/{{testPortfolioId}}/
+Authorization: Bearer {{accessToken}}
+
+### Delete Asset (admin only - will fail if referenced)
+DELETE {{apiBase}}/invest/assets/{{testAssetId}}/
+Authorization: Bearer {{accessToken}}
+
+###
+# 📝 TESTING NOTES & BEST PRACTICES
+###
+
+# 1. SETUP SEQUENCE:
+#    - Register/Login user first
+#    - Create assets (or use existing)
+#    - Create portfolios
+#    - Create transactions (auto-creates holdings)
+#    - Test analytics endpoints
+
+# 2. VARIABLE MANAGEMENT:
+#    - Update @testAssetId after creating assets
+#    - Update @testPortfolioId after creating portfolios
+#    - Update @testTransactionId after creating transactions
+#    - Copy IDs from response and paste into variables
+
+# 3. TESTING WORKFLOW:
+#    - Test happy path scenarios first
+#    - Test edge cases and error scenarios
+#    - Test permissions and security
+#    - Test data consistency and business logic
+
+# 4. PERFORMANCE TESTING:
+#    - Test with larger datasets
+#    - Test pagination with large page sizes
+#    - Test complex filtering queries
+#    - Monitor response times
+
+# 5. DATA INTEGRITY:
+#    - Verify holdings auto-calculation
+#    - Check portfolio value calculations
+#    - Validate transaction impact on holdings
+#    - Test cascade operations
+
+# 6. BROWSER DEV TOOLS:
+#    - Check Network tab for request details
+#    - Monitor Console for any errors
+#    - Use REST Client extension in VS Code
+#    - Save successful requests for regression testing
+
+###
+# 🎯 QUICK TEST SEQUENCE
+###
+
+# 1. Authentication
+# 2. Create 2-3 assets with price data
+# 3. Create 1-2 portfolios
+# 4. Create buy transactions (watch holdings auto-create)
+# 5. Create sell/dividend transactions
+# 6. Test analytics endpoints
+# 7. Test refresh holdings
+# 8. Export data
+
+###
