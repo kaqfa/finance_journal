@@ -23,9 +23,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-ypcwph5hf+0ylbu#kt=gx=z(y3hi9n_g65k_jjou3!4ik*li24'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+import os
+DEBUG = os.environ.get('DEBUG', 'False').lower() == 'true'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['jurnal.fahrifirdaus.cloud', 'localhost', '127.0.0.1']
 
 
 # Application definition
@@ -233,6 +234,7 @@ CORS_ALLOWED_ORIGINS = [
 
 # CSRF Settings untuk API
 CSRF_TRUSTED_ORIGINS = [
+    "https://jurnal.fahrifirdaus.cloud",
     "http://localhost:8000",
     "http://127.0.0.1:8000",
     "http://localhost:3000",
@@ -246,7 +248,7 @@ CSRF_EXEMPT_URLS = [
 
 # Untuk Swagger UI
 CSRF_COOKIE_HTTPONLY = False
-CSRF_COOKIE_SECURE = False  # Set True in production with HTTPS
+CSRF_COOKIE_SECURE = not DEBUG  # True in production with HTTPS
 CSRF_USE_SESSIONS = False
 
 # CORS_ALLOW_ALL_ORIGINS = True
