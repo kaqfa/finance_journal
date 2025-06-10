@@ -227,12 +227,13 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ALLOWED_ORIGINS = [
     "https://example.com",
-    "https://subdomain.example.com",
+    "https://jurnal.fahrifirdaus.cloud",
     "http://localhost:3000",  # untuk development
 ]
 
 # CSRF Settings untuk API
 CSRF_TRUSTED_ORIGINS = [
+    "https://jurnal.fahrifirdaus.cloud",
     "http://localhost:8000",
     "http://127.0.0.1:8000",
     "http://localhost:3000",
@@ -261,7 +262,7 @@ CORS_ALLOW_HEADERS = [
     "x-requested-with",
 ]
 
-try:
-    from .local_settings import *
-except ImportError:
-    pass
+#try:
+from .local_settings import *
+#except ImportError:
+#    pass
