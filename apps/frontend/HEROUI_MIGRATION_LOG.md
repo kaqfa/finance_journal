@@ -74,4 +74,20 @@
 
 ## Migration Status
 - ✅ REDESIGN-001: Dependencies removed
-- ⏳ Next: Install shadcn/ui requirements
+- ✅ REDESIGN-002: shadcn/ui requirements installed
+- ⏳ Next: Initialize shadcn/ui CLI
+
+## REDESIGN-002: shadcn/ui Requirements Installed (2025-06-14)
+
+### Added Dependencies:
+- @radix-ui/react-slot: ^1.0.2 → installed 1.2.3
+- class-variance-authority: ^0.7.0 → installed 0.7.1
+- lucide-react: ^0.400.0 → installed 0.400.0
+- tailwind-merge: ^2.3.0 → installed 2.6.0
+
+### Dependencies Status:
+- ✅ All shadcn/ui core dependencies installed
+- ✅ Radix UI primitives ready
+- ✅ Icon library (lucide-react) available
+- ✅ Class utilities (cva, tailwind-merge) installed
+- 🔥 Some extraneous HeroUI packages still in root node_modules (will be cleaned later)
