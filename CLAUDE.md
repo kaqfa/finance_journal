@@ -44,12 +44,30 @@ wealthwise-monorepo/
 - Completed: 6/6 (100%)
 - Sprint Status: ✅ **FULLY COMPLETED**
 
-### 🎯 Next Sprint Week 25 - Frontend Implementation
-- [ ] FRONTEND-001: Implement finance module pages (wallets, transactions) - **High Priority**
-- [ ] FRONTEND-002: Build dashboard with financial overview widgets - **High Priority**
-- [ ] FRONTEND-003: Add Zustand state management - **Medium Priority**
-- [ ] FRONTEND-004: Create reusable form components with validation - **Medium Priority**
-- [ ] BACKEND-005: Complete investment module API endpoints - **Medium Priority**
+### 🎯 Current Sprint Week 25 - Frontend Redesign (HeroUI → shadcn/ui)
+**STRATEGIC PIVOT**: Complete redesign of frontend component library
+
+#### Phase 1: Foundation Setup (High Priority)
+- [ ] REDESIGN-001: Remove HeroUI dependencies from package.json - **High Priority**
+- [ ] REDESIGN-002: Install shadcn/ui requirements - **High Priority**
+- [ ] REDESIGN-003: Initialize shadcn/ui with CLI - **High Priority**
+- [ ] REDESIGN-004: Install core shadcn components - **High Priority**
+- [ ] REDESIGN-005: Update tailwind.config.js - **High Priority**
+- [ ] REDESIGN-006: Create component mapping documentation - **High Priority**
+
+#### Phase 2: Component Migration (Medium Priority)
+- [ ] REDESIGN-007: Migrate UI primitives (button, spinner) - **Medium Priority**
+- [ ] REDESIGN-008: Migrate authentication components - **Medium Priority**
+- [ ] REDESIGN-009: Setup form handling (react-hook-form + zod) - **Medium Priority**
+- [ ] REDESIGN-010: Migrate navigation components - **Medium Priority**
+- [ ] REDESIGN-011: Update theme system for shadcn - **Medium Priority**
+- [ ] REDESIGN-012: Migrate remaining components - **Medium Priority**
+
+#### Phase 3: Testing & Documentation (Low Priority)
+- [ ] REDESIGN-013: Test all components (responsive + dark mode) - **Low Priority**
+- [ ] REDESIGN-014: Update documentation and tech stack - **Low Priority**
+- [ ] REDESIGN-015: Create reusable form components - **Low Priority**
+- [ ] REDESIGN-016: Final optimization and testing - **Low Priority**
 
 ### 🔄 Future Sprint Candidates
 - [ ] UI-006: Create shared component library (@wealthwise/ui-components)
@@ -95,8 +113,10 @@ wealthwise-monorepo/
 ### Frontend (Next.js)
 - **Framework**: Next.js 15 with App Router
 - **Language**: TypeScript
-- **Styling**: Tailwind CSS + HeroUI components
-- **State Management**: React Context (AuthContext)
+- **Styling**: Tailwind CSS + shadcn/ui components (migrating from HeroUI)
+- **UI Components**: shadcn/ui (built on Radix UI primitives)
+- **Form Handling**: React Hook Form + Zod validation
+- **State Management**: React Context (AuthContext) → planned Zustand migration
 - **HTTP Client**: Axios with interceptors
 - **Testing**: Jest + React Testing Library (planned)
 
