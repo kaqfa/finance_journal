@@ -3,14 +3,15 @@
 ## Project Overview
 WealthWise frontend is a modern React application built with Next.js 14, TypeScript, and Tailwind CSS. It provides a responsive interface for personal finance and investment tracking.
 
-## Tech Stack (ACTUAL)
+## Tech Stack (UPDATED)
 - **Framework**: Next.js 15 with App Router ✅
 - **Language**: TypeScript ✅
-- **Styling**: Tailwind CSS + HeroUI (NOT shadcn/ui) ✅
+- **Styling**: Tailwind CSS + shadcn/ui ✅ (migrated from HeroUI)
+- **UI Components**: shadcn/ui (Radix UI primitives) ✅
+- **Charts**: Recharts ✅
 - **State Management**: AuthContext ✅ (need to add Zustand)
 - **Data Fetching**: Basic fetch (need TanStack Query)
-- **Forms**: Basic forms (need React Hook Form + Zod)
-- **Charts**: Not implemented (need Recharts)
+- **Forms**: React Hook Form + Zod ✅ (implemented in WalletForm)
 - **HTTP Client**: Axios ✅
 
 ## Project Structure
@@ -44,14 +45,17 @@ fe/
 └── tsconfig.json
 ```
 
-## Implementation Status (UPDATED)
+## Implementation Status (UPDATED - 2025-06-15)
 - ✅ **Project Setup**: Next.js 15 with TypeScript complete
 - ✅ **Authentication**: Login page + AuthContext working
-- ✅ **Routing**: Dashboard structure exists
-- 🚧 **Finance Module**: Pages exist but empty
+- ✅ **Routing**: Dashboard structure complete with modern layout
+- ✅ **UI Migration**: Complete migration from HeroUI to shadcn/ui
+- ✅ **Dashboard**: Modern dashboard with academy-style layout
+- ✅ **Finance Module**: Wallet management with modern UI
+- ✅ **Layout Components**: Sidebar, header, navigation complete
+- ✅ **Chart Components**: Recharts integration with expense breakdown
 - 📋 **Investment Module**: Not started
-- 🚧 **UI Components**: Basic HeroUI setup, need more components
-- 🚧 **Dashboard**: Empty page, needs implementation
+- 🚧 **Transaction Module**: Pages need to be created
 
 ## API Integration
 - **Base URL**: `https://jurnal.fahrifirdaus.cloud/api/v1/`
@@ -143,10 +147,11 @@ interface InvestmentState {
 ## Styling Guidelines
 
 ### Design System
-- **Colors**: HeroUI color system with light/dark mode support
-- **Typography**: Consistent font scale and weights
-- **Spacing**: Tailwind spacing scale (4px increments)
-- **Components**: HeroUI as base, customized for WealthWise branding
+- **Colors**: shadcn/ui color system with light/dark mode support
+- **Typography**: Modern font scale with tracking-tight headings
+- **Spacing**: Academy-style spacing (space-y-6, generous padding)
+- **Components**: shadcn/ui as base, following modern dashboard patterns
+- **Layout**: Clean, spacious design inspired by shadcnuikit.com/dashboard/academy
 
 ### Responsive Design
 - **Mobile First**: Design for mobile, enhance for desktop
@@ -209,26 +214,148 @@ npm run dev
 - Use proper typing for all API responses
 - Implement runtime validation with Zod
 
-## Current Priorities (UPDATED)
-1. **Finance Module Implementation**: Build wallet and transaction pages (backend ready)
-2. **Dashboard Enhancement**: Create overview with financial widgets
-3. **State Management**: Implement Zustand stores for proper state handling
-4. **Component Library**: Build reusable components with HeroUI
-5. **Investment Module**: Implement after finance module is complete
+## 📋 Current Tasks & Priorities
+<!-- UPDATED: 2025-06-15 -->
+
+### ✅ COMPLETED TASKS
+
+#### **UI Migration & Dashboard Redesign (Week 24-25)**
+- [x] **REDESIGN-001**: Remove HeroUI dependencies from package.json - **Completed** (2025-06-15)
+- [x] **REDESIGN-002**: Install shadcn/ui requirements - **Completed** (2025-06-15)
+- [x] **DASHBOARD-001**: Study shadcnuikit.com/dashboard design patterns - **Completed** (2025-06-15)
+- [x] **DASHBOARD-002**: Install additional shadcn components - **Completed** (2025-06-15)
+- [x] **DASHBOARD-003**: Create modern sidebar navigation - **Completed** (2025-06-15)
+- [x] **DASHBOARD-004**: Create top header with user menu - **Completed** (2025-06-15)
+- [x] **DASHBOARD-005**: Redesign main dashboard layout - **Completed** (2025-06-15)
+- [x] **DASHBOARD-006**: Create dashboard cards and metrics - **Completed** (2025-06-15)
+- [x] **DASHBOARD-007**: Migrate finance pages to new design - **Completed** (2025-06-15)
+- [x] **DASHBOARD-008**: Update to academy-style layout - **Completed** (2025-06-15)
+
+#### **Finance Module Foundation**
+- [x] Wallet management page with modern shadcn/ui design - **Completed** (2025-06-15)
+- [x] WalletCard component with dropdown actions - **Completed** (2025-06-15)
+- [x] WalletForm with Dialog and validation - **Completed** (2025-06-15)
+- [x] Finance overview page with quick actions - **Completed** (2025-06-15)
+- [x] Integration with backend wallet API - **Completed** (2025-06-15)
+
+#### **Dashboard Components**
+- [x] OverviewCards with financial metrics - **Completed** (2025-06-15)
+- [x] RecentTransactions component - **Completed** (2025-06-15)
+- [x] ExpenseChart with Recharts - **Completed** (2025-06-15)
+- [x] MetricCard with trend indicators - **Completed** (2025-06-15)
+- [x] Responsive grid layout (academy-style) - **Completed** (2025-06-15)
+
+#### **Layout & Navigation**
+- [x] Modern sidebar with navigation sections - **Completed** (2025-06-15)
+- [x] Mobile sidebar with sheet component - **Completed** (2025-06-15)
+- [x] Clean header (removed notifications/search) - **Completed** (2025-06-15)
+- [x] Page-level padding system - **Completed** (2025-06-15)
+- [x] Consistent typography and spacing - **Completed** (2025-06-15)
+
+### 🚧 CURRENT TASKS - Transaction Module Implementation
+
+#### **Transaction Management (High Priority)**
+- [ ] `/finance/transactions` - Transaction list page with shadcn/ui design
+- [ ] `/finance/transactions/new` - Add transaction form with category/tag selection
+- [ ] `/finance/transactions/[id]/edit` - Edit transaction form
+- [ ] Transaction search & filter components (date range, category, amount)
+- [ ] TransactionCard component following wallet card pattern
+
+#### **Wallet Enhancement (Medium Priority)**
+- [ ] `/finance/wallets/[id]` - Wallet detail view with transaction history
+- [ ] Wallet transaction history component
+- [ ] Wallet balance chart over time
+
+#### **Categories & Tags**
+- [ ] `/finance/categories` - Category management with CRUD operations
+- [ ] `/finance/tags` - Tag management with multi-select functionality
+- [ ] Category/tag selection components for transaction forms
+
+### 🎯 Dashboard Enhancement (Week 3-4)
+
+#### **Dashboard Enhancement (Low Priority)**
+- [ ] Real data integration for overview cards
+- [ ] Monthly spending trend chart
+- [ ] Interactive chart legends
+- [ ] Quick action improvements
+
+### 🔧 State Management & Architecture
+
+#### **Zustand Stores**
+- [ ] Finance store (wallets, transactions, categories, tags)
+- [ ] Auth store improvement with persistent token management
+- [ ] UI state store (loading states, errors, modal management)
+
+#### **API Integration Enhancement**
+- [ ] Enhanced axios interceptors with better error handling
+- [ ] Standardized loading states across all components
+- [ ] Retry logic for failed requests
+- [ ] Optimistic updates for better UX
+
+### 🧩 Component Architecture
+
+#### **Component Development**
+- [ ] TransactionList component with sorting and filtering
+- [ ] CategorySelector component with search functionality
+- [ ] DateRangePicker component for filtering
+- [ ] TransactionForm with real-time validation
+- [ ] TransferForm for inter-wallet transfers
+- [ ] CurrencyInput component with proper formatting
+
+### 📱 Mobile Optimization
+- [ ] Responsive layouts for all pages (mobile-first approach)
+- [ ] Touch-friendly interactions and button sizing
+- [ ] Mobile navigation improvements with collapsible sidebar
+- [ ] Swipe gestures for transaction actions
+
+### 💼 Investment Module (Week 5-6) - After Finance Completion
+
+#### **Portfolio Management**
+- [ ] Portfolio list and detail pages with performance metrics
+- [ ] Add/edit portfolio forms with risk level selection
+- [ ] Portfolio performance display with charts and analytics
+
+#### **Asset Management**
+- [ ] Asset browser and search with filtering by type/sector
+- [ ] Asset detail pages with price history and charts
+- [ ] Asset selection components for transaction forms
+
+### 🎯 CURRENT SPRINT PRIORITIES
+1. **Transaction Module** - Complete transaction CRUD with modern UI
+2. **Categories & Tags** - Management pages for transaction organization
+3. **Real Data Integration** - Connect dashboard to actual API data
+4. **Mobile Optimization** - Test and refine responsive design
+5. **Investment Module** - Start portfolio management features
+
+### 📈 PROGRESS METRICS
+- **UI Migration**: 100% Complete ✅
+- **Dashboard Redesign**: 100% Complete ✅
+- **Finance Module**: 60% Complete (Wallets ✅, Transactions 🚧)
+- **Layout & Navigation**: 100% Complete ✅
+- **Component Library**: 70% Complete (Core components ✅)
+
+### 🎨 DESIGN ACHIEVEMENTS
+- ✅ Modern academy-style layout with generous spacing
+- ✅ Complete shadcn/ui migration (removed all HeroUI dependencies)
+- ✅ Responsive grid system following modern patterns
+- ✅ Clean header design (removed clutter)
+- ✅ Professional card-based UI with hover effects
+- ✅ Consistent typography and color system
 
 ## Notes for Claude Code
-- **Current Tasks**: Check `TODO.md` for detailed development priorities and task list
+- **Current Tasks**: See "📋 Current Tasks & Priorities" section above for detailed task breakdown
 - **Component Map**: See `COMPONENT_MAP.md` for component architecture and what needs to be built
 - **Development Guide**: Check `DEVELOPMENT.md` for coding standards and patterns
 - **API Reference**: Check `API_REFERENCE.md` for all available backend endpoints and usage examples
 - **Complete API Schema**: See `docs/openapi.json` for full OpenAPI specification
 - Focus on TypeScript type safety throughout
-- Use HeroUI components for consistent UI
+- Use shadcn/ui components for consistent modern UI
+- Follow academy-style design patterns for spacing and layout
 - Implement proper loading and error states
 - Follow mobile-first responsive design
-- Prioritize Finance module first (backend is production-ready)
+- Prioritize Transaction module completion
 - Use existing AuthContext patterns for consistency
-- Build reusable components following the component map
+- Build reusable components following established patterns
 
 ## Backend API Reference
 The backend API is fully documented at `https://jurnal.fahrifirdaus.cloud/api/docs/`
@@ -361,20 +488,26 @@ export interface InvestmentHolding {
 
 ## UI Components Structure
 
-### Base Components (HeroUI)
-- Button, Input, Card, Dropdown, Avatar
-- Navbar, Spinner, Switch, Link, Divider
-- Code, Kbd, Snippet (specialized components)
-- Need to add: Table, Form, Dialog components
+### Base Components (shadcn/ui) ✅
+- Button, Input, Card, Avatar, Badge ✅
+- Dialog, Select, Switch, Label ✅
+- Alert, Dropdown Menu ✅
+- Sidebar, Sheet (mobile) ✅
+- Need to add: Table, Form, Combobox components
 
-### Custom Components to Build
-- `WalletCard`: Display wallet info with balance
-- `TransactionItem`: List item for transactions
-- `PortfolioCard`: Portfolio overview card
-- `AssetSearchCombobox`: Searchable asset selector
-- `DateRangePicker`: Date range selection
-- `CurrencyInput`: Formatted currency input
-- `PerformanceMetric`: Display P&L with colors
+### Custom Components Status
+- ✅ `WalletCard`: Modern card with dropdown actions
+- ✅ `WalletForm`: Dialog form with validation
+- ✅ `MetricCard`: Dashboard metrics with trends
+- ✅ `RecentTransactions`: Transaction list component
+- ✅ `ExpenseChart`: Pie chart with Recharts
+- ✅ `Sidebar`: Navigation with sections
+- ✅ `Header`: Clean header with user menu
+- [ ] `TransactionItem`: List item for transactions
+- [ ] `TransactionForm`: Add/edit transaction form
+- [ ] `CategorySelector`: Category selection component
+- [ ] `DateRangePicker`: Date range selection
+- [ ] `CurrencyInput`: Formatted currency input
 
 ## Routing Structure
 ```
@@ -402,32 +535,39 @@ export interface InvestmentHolding {
 
 ## Development Phases
 
-### Phase 1: Foundation (Week 1-2)
-- Next.js project setup with TypeScript
-- Authentication flow implementation
-- Basic layout and navigation
-- API client setup with axios
+### ✅ COMPLETED PHASES
 
-### Phase 2: Finance Module (Week 3-4)
-- Wallet management pages
-- Transaction CRUD functionality
-- Category and tag management
-- Basic reporting and charts
+#### Phase 1: Foundation ✅
+- ✅ Next.js project setup with TypeScript
+- ✅ Authentication flow implementation
+- ✅ Modern layout and navigation (shadcn/ui)
+- ✅ API client setup with axios
 
-### Phase 3: Dashboard (Week 5)
-- Overview dashboard with widgets
-- Financial summary cards
-- Recent transactions display
-- Quick action buttons
+#### Phase 2: UI Migration & Dashboard ✅
+- ✅ Complete HeroUI to shadcn/ui migration
+- ✅ Modern dashboard with academy-style layout
+- ✅ Wallet management with modern UI
+- ✅ Chart integration with Recharts
+- ✅ Responsive design implementation
 
-### Phase 4: Investment Module (Week 6-8)
-- Portfolio management
-- Asset browser and search
-- Investment transaction recording
-- Holdings display with P&L
+### 🚧 CURRENT PHASE
 
-### Phase 5: Enhancement (Week 9-10)
-- Advanced charts and analytics
-- Mobile optimization
-- Performance improvements
-- Testing and bug fixes
+#### Phase 3: Transaction Module (In Progress)
+- [ ] Transaction CRUD functionality
+- [ ] Advanced filtering and search
+- [ ] Category and tag management
+- [ ] Real-time data integration
+
+### 📋 UPCOMING PHASES
+
+#### Phase 4: Investment Module
+- [ ] Portfolio management
+- [ ] Asset browser and search
+- [ ] Investment transaction recording
+- [ ] Holdings display with P&L
+
+#### Phase 5: Enhancement
+- [ ] Advanced analytics
+- [ ] Performance optimizations
+- [ ] Comprehensive testing
+- [ ] Production deployment
