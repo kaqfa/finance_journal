@@ -8,6 +8,7 @@ import {
   Tag,
   TrendingUp,
   TrendingDown,
+  AlertCircle,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -26,6 +27,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import financeAPI from "@/lib/api/finance";
 import { Category } from "@/types";
 import { CategoryForm } from "@/components/finance/CategoryForm";
@@ -35,15 +37,21 @@ export default function CategoriesPage() {
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
 
   const fetchCategories = async () => {
     try {
       setLoading(true);
+      console.log("Fetching categories...");
       const response = await financeAPI.getCategories();
+
+      console.log("Categories response:", response.data);
 
       setCategories(Array.isArray(response.data) ? response.data : []);
     } catch (error) {
       console.error("Failed to fetch categories:", error);
+      console.error("Fetch error details:", error);
       setCategories([]);
     } finally {
       setLoading(false);
@@ -56,11 +64,24 @@ export default function CategoriesPage() {
 
   const handleCreateCategory = async (data: any) => {
     try {
-      await financeAPI.createCategory(data);
+      setError(null);
+      console.log("Creating category with data:", data);
+      const response = await financeAPI.createCategory(data);
+
+      console.log("Category created successfully:", response.data);
+      setSuccess("Category created successfully!");
       fetchCategories();
       setDialogOpen(false);
-    } catch (error) {
+      // Clear success message after 3 seconds
+      setTimeout(() => setSuccess(null), 3000);
+    } catch (error: any) {
       console.error("Failed to create category:", error);
+      console.error("Error details:", error);
+      setError(
+        error.response?.data?.message ||
+          error.message ||
+          "Failed to create category",
+      );
     }
   };
 
@@ -79,7 +100,7 @@ export default function CategoriesPage() {
 
   if (loading) {
     return (
-      <div className="space-y-6">
+      <div className="flex-1 space-y-6 p-6 md:p-8">
         <div className="flex items-center justify-between">
           <h1 className="text-3xl font-bold tracking-tight">Categories</h1>
         </div>
@@ -104,7 +125,7 @@ export default function CategoriesPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="flex-1 space-y-6 p-6 md:p-8">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Categories</h1>
@@ -133,6 +154,23 @@ export default function CategoriesPage() {
           </DialogContent>
         </Dialog>
       </div>
+
+      {/* Success/Error Messages */}
+      {success && (
+        <Alert className="border-green-200 bg-green-50">
+          <AlertCircle className="h-4 w-4 text-green-600" />
+          <AlertDescription className="text-green-800">
+            {success}
+          </AlertDescription>
+        </Alert>
+      )}
+
+      {error && (
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      )}
 
       <div className="grid gap-6 md:grid-cols-2">
         {/* Income Categories */}
