@@ -1,0 +1,42 @@
+{
+  "name": "wealthwise-monorepo",
+  "version": "1.0.0",
+  "description": "WealthWise - Personal Finance Management Platform",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev:be\" \"npm run dev:fe\"",
+    "dev:be": "cd apps/backend && python manage.py runserver",
+    "dev:fe": "cd apps/frontend && npm run dev",
+    "build": "turbo run build",
+    "build:fe": "cd apps/frontend && npm run build",
+    "test": "turbo run test",
+    "test:be": "cd apps/backend && python manage.py test",
+    "test:fe": "cd apps/frontend && npm run test",
+    "lint": "turbo run lint",
+    "lint:fix": "turbo run lint:fix",
+    "clean": "turbo run clean",
+    "typecheck": "turbo run typecheck",
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\"",
+    "format:check": "prettier --check \"**/*.{js,jsx,ts,tsx,json,md}\"",
+    "install:all": "npm install && cd apps/backend && pip install -r requirements.txt",
+    "setup": "npm run install:all && npm run dev:be -- --settings=wealthwise.settings --migrate"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "turbo": "^1.11.2",
+    "prettier": "^3.1.1",
+    "@typescript-eslint/eslint-plugin": "^6.15.0",
+    "@typescript-eslint/parser": "^6.15.0",
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^9.1.0"
+  },
+  "packageManager": "npm@10.2.4",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  }
+}
