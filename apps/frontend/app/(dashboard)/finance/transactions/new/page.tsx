@@ -125,17 +125,20 @@ export default function NewTransactionPage() {
   };
 
   const addTag = (tag: Tag) => {
-    if (!selectedTags.find(t => t.id === tag.id)) {
-      setSelectedTags([...selectedTags, tag]);
+    const currentTags = Array.isArray(selectedTags) ? selectedTags : [];
+    if (!currentTags.find(t => t.id === tag.id)) {
+      setSelectedTags([...currentTags, tag]);
     }
   };
 
   const removeTag = (tagId: number) => {
-    setSelectedTags(selectedTags.filter(tag => tag.id !== tagId));
+    setSelectedTags(Array.isArray(selectedTags) ? selectedTags.filter(tag => tag.id !== tagId) : []);
   };
 
   const filteredCategories = Array.isArray(categories) ? categories.filter(cat => cat.type === formData.type) : [];
-  const availableTags = Array.isArray(tags) ? tags.filter(tag => !selectedTags.find(t => t.id === tag.id)) : [];
+  const availableTags = Array.isArray(tags) ? tags.filter(tag => 
+    !Array.isArray(selectedTags) || !selectedTags.find(t => t.id === tag.id)
+  ) : [];
 
   if (loading) {
     return (

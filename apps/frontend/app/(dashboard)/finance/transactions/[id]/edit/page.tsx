@@ -87,9 +87,9 @@ export default function EditTransactionPage() {
         });
 
         // Set selected tags
-        const transactionTags = tagsRes.data.filter(tag => 
-          transactionData.tag_ids.includes(tag.id)
-        );
+        const transactionTags = Array.isArray(tagsRes.data) ? tagsRes.data.filter(tag => 
+          Array.isArray(transactionData.tag_ids) && transactionData.tag_ids.includes(tag.id)
+        ) : [];
         setSelectedTags(transactionTags);
         
         setError(null);
@@ -152,17 +152,20 @@ export default function EditTransactionPage() {
   };
 
   const addTag = (tag: Tag) => {
-    if (!selectedTags.find(t => t.id === tag.id)) {
-      setSelectedTags([...selectedTags, tag]);
+    const currentTags = Array.isArray(selectedTags) ? selectedTags : [];
+    if (!currentTags.find(t => t.id === tag.id)) {
+      setSelectedTags([...currentTags, tag]);
     }
   };
 
   const removeTag = (tagId: number) => {
-    setSelectedTags(selectedTags.filter(tag => tag.id !== tagId));
+    setSelectedTags(Array.isArray(selectedTags) ? selectedTags.filter(tag => tag.id !== tagId) : []);
   };
 
   const filteredCategories = Array.isArray(categories) ? categories.filter(cat => cat.type === formData.type) : [];
-  const availableTags = Array.isArray(tags) ? tags.filter(tag => !selectedTags.find(t => t.id === tag.id)) : [];
+  const availableTags = Array.isArray(tags) ? tags.filter(tag => 
+    !Array.isArray(selectedTags) || !selectedTags.find(t => t.id === tag.id)
+  ) : [];
 
   if (loading) {
     return (
