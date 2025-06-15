@@ -126,6 +126,76 @@ wealthwise-monorepo/
 - **Context switching**: Use separate Claude sessions for different apps when needed
 - **Docker development**: Use `make docker-dev` for consistent development environment
 
+## 📋 Todo List Management System
+
+### 🔄 **3-Layer Todo System**
+
+1. **🤖 Session TodoRead/TodoWrite** (Real-time tracking)
+   - Purpose: Current session work tracking, temporary
+   - Usage: `TodoRead` and `TodoWrite` tools in Claude Code
+   - Scope: Active development tasks only
+   - Lifetime: Session-based, not persistent
+
+2. **📁 App-Specific CLAUDE.md** (Technical implementation)
+   - Purpose: Detailed technical tasks and implementation details
+   - Files: `apps/frontend/CLAUDE.md`, `apps/backend/CLAUDE.md`
+   - Scope: Component-level, API-level, technical architecture
+   - Lifetime: Persistent, version controlled
+
+3. **🏠 Root CLAUDE.md** (Strategic overview)
+   - Purpose: Sprint goals, high-level progress, project roadmap
+   - File: `/CLAUDE.md` (this file)
+   - Scope: Project-wide goals, sprint planning, major milestones
+   - Lifetime: Persistent, strategic planning
+
+### ✅ **Synchronization Rules**
+
+#### **When completing tasks:**
+1. Mark as completed in Session TodoWrite
+2. Update relevant app-specific CLAUDE.md with completion date
+3. Update root CLAUDE.md sprint progress
+4. Commit all CLAUDE.md changes with progress update
+
+#### **Before starting new sprints:**
+1. Check all 3 layers for consistency
+2. Remove duplicate/redundant todos across files
+3. Ensure sprint goals align with app-specific tasks
+4. Archive completed sprints to maintain clean tracking
+
+#### **Daily sync checklist:**
+- [ ] `TodoRead` matches current work
+- [ ] App CLAUDE.md reflects technical progress
+- [ ] Root CLAUDE.md shows sprint status
+- [ ] No duplicate tasks across layers
+- [ ] Completed tasks marked with dates
+
+### 🧹 **Cleanup Guidelines**
+
+#### **Remove redundant todos when:**
+- Same task exists in multiple files with different wording
+- Completed tasks are still marked as pending elsewhere
+- Technical tasks are duplicated in strategic overview
+- Sprint goals overlap with detailed implementation tasks
+
+#### **Keep separate todos when:**
+- Different scope (strategic vs technical vs implementation)
+- Different timeline (current sprint vs future planning)
+- Different responsibility (frontend vs backend vs fullstack)
+- Different granularity (epic vs story vs task)
+
+### 📊 **Progress Tracking Protocol**
+
+```markdown
+# Example sync after completing work:
+
+1. Session: Mark dashboard-008 as completed
+2. Frontend CLAUDE.md: [x] Dashboard layout migration - Completed (2025-06-15)
+3. Root CLAUDE.md: [x] DASHBOARD-006: Migrate finance pages - Completed (2025-06-15)
+4. Commit: "docs: sync todo completion across all layers"
+```
+
+**🎯 Goal**: Maintain single source of truth while supporting different levels of detail and planning horizons.
+
 ## 🏗️ Tech Stack Overview
 
 ### Backend (Django)
@@ -232,5 +302,6 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 
 ---
 
-*Last Updated: 2025-06-14*
+*Last Updated: 2025-06-15*
 *Claude Code Integration: Optimized for AI-assisted development*
+*Todo Management: 3-layer system with sync protocol*
