@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Card, CardBody } from "@heroui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 
@@ -34,9 +34,9 @@ export default function AuthLayout({ children, className }: AuthLayoutProps) {
         </div>
         
         <Card className={cn("w-full", className)}>
-          <CardBody>
+          <CardContent className="p-6">
             {children}
-          </CardBody>
+          </CardContent>
         </Card>
         
         <div className="mt-8 text-center text-sm text-gray-600 dark:text-gray-400">

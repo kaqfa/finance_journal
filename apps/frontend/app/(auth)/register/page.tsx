@@ -1,12 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Input } from "@heroui/input";
-import { Button } from "@heroui/button";
-import { Link } from "@heroui/link";
-import { Divider } from "@heroui/divider";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -137,99 +138,125 @@ export default function RegisterPage() {
       </div>
       
       {errors.general && (
-        <div className="bg-danger-50 text-danger p-3 rounded-lg">
+        <div className="bg-red-50 dark:bg-red-950 text-red-700 dark:text-red-300 p-3 rounded-lg border border-red-200 dark:border-red-800">
           {errors.general}
         </div>
       )}
       
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Input
-            label="First Name"
-            name="first_name"
-            placeholder="Enter your first name"
-            value={formData.first_name}
-            onChange={handleChange}
-            variant="bordered"
-            isInvalid={!!errors.first_name}
-            errorMessage={errors.first_name}
-            isRequired
-          />
-          <Input
-            label="Last Name"
-            name="last_name"
-            placeholder="Enter your last name"
-            value={formData.last_name}
-            onChange={handleChange}
-            variant="bordered"
-            isInvalid={!!errors.last_name}
-            errorMessage={errors.last_name}
-            isRequired
-          />
+          <div className="space-y-2">
+            <Label htmlFor="first_name">First Name</Label>
+            <Input
+              id="first_name"
+              name="first_name"
+              placeholder="Enter your first name"
+              value={formData.first_name}
+              onChange={handleChange}
+              className={errors.first_name ? "border-destructive" : ""}
+              required
+            />
+            {errors.first_name && (
+              <p className="text-sm text-destructive">{errors.first_name}</p>
+            )}
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="last_name">Last Name</Label>
+            <Input
+              id="last_name"
+              name="last_name"
+              placeholder="Enter your last name"
+              value={formData.last_name}
+              onChange={handleChange}
+              className={errors.last_name ? "border-destructive" : ""}
+              required
+            />
+            {errors.last_name && (
+              <p className="text-sm text-destructive">{errors.last_name}</p>
+            )}
+          </div>
         </div>
-        <Input
-          label="Username"
-          name="username"
-          placeholder="Choose a username"
-          value={formData.username}
-          onChange={handleChange}
-          variant="bordered"
-          isInvalid={!!errors.username}
-          errorMessage={errors.username}
-          isRequired
-        />
-        <Input
-          label="Email"
-          name="email"
-          type="email"
-          placeholder="Enter your email"
-          value={formData.email}
-          onChange={handleChange}
-          variant="bordered"
-          isInvalid={!!errors.email}
-          errorMessage={errors.email}
-          isRequired
-        />
-        <Input
-          label="Password"
-          name="password"
-          type="password"
-          placeholder="Create a password"
-          value={formData.password}
-          onChange={handleChange}
-          variant="bordered"
-          isInvalid={!!errors.password}
-          errorMessage={errors.password}
-          isRequired
-        />
-        <Input
-          label="Confirm Password"
-          name="password2"
-          type="password"
-          placeholder="Confirm your password"
-          value={formData.password2}
-          onChange={handleChange}
-          variant="bordered"
-          isInvalid={!!errors.password2}
-          errorMessage={errors.password2}
-          isRequired
-        />
+        <div className="space-y-2">
+          <Label htmlFor="username">Username</Label>
+          <Input
+            id="username"
+            name="username"
+            placeholder="Choose a username"
+            value={formData.username}
+            onChange={handleChange}
+            className={errors.username ? "border-destructive" : ""}
+            required
+          />
+          {errors.username && (
+            <p className="text-sm text-destructive">{errors.username}</p>
+          )}
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="email">Email</Label>
+          <Input
+            id="email"
+            name="email"
+            type="email"
+            placeholder="Enter your email"
+            value={formData.email}
+            onChange={handleChange}
+            className={errors.email ? "border-destructive" : ""}
+            required
+          />
+          {errors.email && (
+            <p className="text-sm text-destructive">{errors.email}</p>
+          )}
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="password">Password</Label>
+          <Input
+            id="password"
+            name="password"
+            type="password"
+            placeholder="Create a password"
+            value={formData.password}
+            onChange={handleChange}
+            className={errors.password ? "border-destructive" : ""}
+            required
+          />
+          {errors.password && (
+            <p className="text-sm text-destructive">{errors.password}</p>
+          )}
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="password2">Confirm Password</Label>
+          <Input
+            id="password2"
+            name="password2"
+            type="password"
+            placeholder="Confirm your password"
+            value={formData.password2}
+            onChange={handleChange}
+            className={errors.password2 ? "border-destructive" : ""}
+            required
+          />
+          {errors.password2 && (
+            <p className="text-sm text-destructive">{errors.password2}</p>
+          )}
+        </div>
         <Button
           type="submit"
-          color="primary"
-          isLoading={authLoading}
-          fullWidth
+          disabled={authLoading}
+          className="w-full"
         >
-          Create Account
+          {authLoading ? "Creating Account..." : "Create Account"}
         </Button>
       </form>
       
-      <Divider className="my-4" />
+      <Separator className="my-4" />
       
       <div className="text-center">
-        <p className="text-sm text-gray-500 dark:text-gray-400">
+        <p className="text-sm text-muted-foreground">
           Already have an account?{" "}
-          <Link href="/login" color="primary">
+          <Link 
+            href="/login" 
+            className="text-primary hover:underline font-medium"
+          >
             Sign in instead
           </Link>
         </p>

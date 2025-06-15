@@ -1,15 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { Input } from "@heroui/input";
-import { Button } from "@heroui/button";
-import { Link } from "@heroui/link";
-import { Divider } from "@heroui/divider";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
+import Link from "next/link";
 import { authAPI } from "@/lib/api";
-import { useRouter } from "next/navigation";
 
 export default function ForgetPasswordPage() {
-  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
@@ -48,57 +47,58 @@ export default function ForgetPasswordPage() {
       </div>
 
       {error && (
-        <div className="bg-danger-50 text-danger p-3 rounded-lg">
+        <div className="bg-red-50 dark:bg-red-950 text-red-700 dark:text-red-300 p-3 rounded-lg border border-red-200 dark:border-red-800">
           {error}
         </div>
       )}
       
       {success ? (
         <div className="space-y-4">
-          <div className="bg-success-50 text-success p-4 rounded-lg text-center">
+          <div className="bg-green-50 dark:bg-green-950 text-green-700 dark:text-green-300 p-4 rounded-lg text-center border border-green-200 dark:border-green-800">
             <h3 className="text-lg font-medium mb-2">Reset Email Sent!</h3>
             <p>
-              If an account exists with the email you entered, you'll receive password reset instructions.
+              If an account exists with the email you entered, you&apos;ll receive password reset instructions.
             </p>
           </div>
-          <Button 
-            as={Link} 
-            href="/login" 
-            color="primary" 
-            fullWidth
-          >
-            Return to Login
+          <Button asChild className="w-full">
+            <Link href="/login">
+              Return to Login
+            </Link>
           </Button>
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-4">
-          <Input
-            label="Email"
-            type="email"
-            placeholder="Enter your email address"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            variant="bordered"
-            isRequired
-            fullWidth
-          />
+          <div className="space-y-2">
+            <Label htmlFor="email">Email</Label>
+            <Input
+              id="email"
+              type="email"
+              placeholder="Enter your email address"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className="w-full"
+            />
+          </div>
           <Button
             type="submit"
-            color="primary"
-            isLoading={isLoading}
-            fullWidth
+            disabled={isLoading}
+            className="w-full"
           >
-            Send Reset Link
+            {isLoading ? "Sending..." : "Send Reset Link"}
           </Button>
         </form>
       )}
       
-      <Divider className="my-4" />
+      <Separator className="my-4" />
       
       <div className="text-center">
-        <p className="text-sm text-gray-500 dark:text-gray-400">
+        <p className="text-sm text-muted-foreground">
           Remember your password?{" "}
-          <Link href="/login" color="primary">
+          <Link 
+            href="/login" 
+            className="text-primary hover:underline font-medium"
+          >
             Sign in
           </Link>
         </p>

@@ -1,13 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Input } from "@heroui/input";
-import { Button } from "@heroui/button";
-import { Link } from "@heroui/link";
-import { Divider } from "@heroui/divider";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { authAPI } from "@/lib/api";
+import Link from "next/link";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -75,60 +76,69 @@ export default function LoginPage() {
       </div>
       
       {showRegistrationSuccess && (
-        <div className="bg-success-50 text-success p-3 rounded-lg">
+        <div className="bg-green-50 dark:bg-green-950 text-green-700 dark:text-green-300 p-3 rounded-lg border border-green-200 dark:border-green-800">
           Registration successful! You can now log in with your credentials.
         </div>
       )}
       
       {error && (
-        <div className="bg-danger-50 text-danger p-3 rounded-lg">
+        <div className="bg-red-50 dark:bg-red-950 text-red-700 dark:text-red-300 p-3 rounded-lg border border-red-200 dark:border-red-800">
           {error}
         </div>
       )}
       
       <form onSubmit={handleSubmit} className="space-y-4">
-        <Input
-          label="Username"
-          name="username"
-          placeholder="Enter your username"
-          value={formData.username}
-          onChange={handleChange}
-          variant="bordered"
-          isRequired
-          fullWidth
-        />
-        <Input
-          label="Password"
-          name="password"
-          placeholder="Enter your password"
-          type="password"
-          value={formData.password}
-          onChange={handleChange}
-          variant="bordered"
-          isRequired
-          fullWidth
-        />
+        <div className="space-y-2">
+          <Label htmlFor="username">Username</Label>
+          <Input
+            id="username"
+            name="username"
+            placeholder="Enter your username"
+            value={formData.username}
+            onChange={handleChange}
+            required
+            className="w-full"
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="password">Password</Label>
+          <Input
+            id="password"
+            name="password"
+            placeholder="Enter your password"
+            type="password"
+            value={formData.password}
+            onChange={handleChange}
+            required
+            className="w-full"
+          />
+        </div>
         <div className="flex justify-end">
-          <Link href="/forget-password" color="primary" size="sm">
+          <Link 
+            href="/forget-password" 
+            className="text-sm text-primary hover:underline"
+          >
             Forgot password?
           </Link>
         </div>
         <Button
           type="submit"
-          color="primary"
-          isLoading={authLoading}
-          fullWidth
+          disabled={authLoading}
+          className="w-full"
         >
-          Sign In
+          {authLoading ? "Signing In..." : "Sign In"}
         </Button>
       </form>
       
-      <Divider className="my-4" />
+      <Separator className="my-4" />
       
       <div className="text-center">
-        <p className="text-sm text-gray-500 dark:text-gray-400">
-          Don't have an account?{" "}
-          <Link href="/register" color="primary">
+        <p className="text-sm text-muted-foreground">
+          Don&apos;t have an account?{" "}
+          <Link 
+            href="/register" 
+            className="text-primary hover:underline font-medium"
+          >
             Create an account
           </Link>
         </p>

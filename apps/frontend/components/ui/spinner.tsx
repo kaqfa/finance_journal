@@ -1,24 +1,28 @@
 import React from "react";
-import { Spinner as HeroUISpinner } from "@heroui/spinner";
+import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface SpinnerProps {
   size?: "sm" | "md" | "lg";
-  color?: "primary" | "secondary" | "success" | "warning" | "danger";
   className?: string;
   label?: string;
 }
 
+const sizeMap = {
+  sm: "h-4 w-4",
+  md: "h-6 w-6", 
+  lg: "h-8 w-8"
+};
+
 export function Spinner({
   size = "md",
-  color = "primary",
   className,
-  label = "Loading...",
+  label,
 }: SpinnerProps) {
   return (
     <div className={cn("flex items-center justify-center gap-2", className)}>
-      <HeroUISpinner color={color} size={size} />
-      {label && <span className="text-sm text-default-500">{label}</span>}
+      <Loader2 className={cn("animate-spin", sizeMap[size])} />
+      {label && <span className="text-sm text-muted-foreground">{label}</span>}
     </div>
   );
 }

@@ -1,10 +1,17 @@
 'use client';
 
-import { Card, CardBody, CardHeader } from "@heroui/card";
-import { Chip } from "@heroui/chip";
-import { Button } from "@heroui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { 
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu";
 import { WalletList } from "@/types";
 import { formatCurrency } from "@/lib/utils";
+import { MoreHorizontal, Edit, Trash2, Wallet, CreditCard, Smartphone, Banknote } from "lucide-react";
 
 interface WalletCardProps {
   wallet: WalletList;
@@ -13,13 +20,23 @@ interface WalletCardProps {
   onView?: (wallet: WalletList) => void;
 }
 
-const getWalletTypeColor = (type: string): "default" | "primary" | "secondary" | "success" | "warning" | "danger" => {
+const getWalletTypeColor = (type: string): "default" | "secondary" | "destructive" | "outline" => {
   switch (type) {
-    case 'cash': return 'success';
-    case 'bank': return 'primary';
-    case 'ewallet': return 'secondary';
-    case 'credit': return 'warning';
+    case 'cash': return 'default';
+    case 'bank': return 'secondary';
+    case 'ewallet': return 'outline';
+    case 'credit': return 'destructive';
     default: return 'default';
+  }
+};
+
+const getWalletTypeIcon = (type: string) => {
+  switch (type) {
+    case 'cash': return Banknote;
+    case 'bank': return Wallet;
+    case 'ewallet': return Smartphone;
+    case 'credit': return CreditCard;
+    default: return Wallet;
   }
 };
 
@@ -35,76 +52,75 @@ const getWalletTypeLabel = (type: string) => {
 };
 
 export default function WalletCard({ wallet, onEdit, onDelete, onView }: WalletCardProps) {
-  const balanceColor = parseFloat(wallet.current_balance) >= 0 ? 'text-success' : 'text-danger';
+  const balanceColor = parseFloat(wallet.current_balance) >= 0 
+    ? 'text-green-600 dark:text-green-400' 
+    : 'text-red-600 dark:text-red-400';
+  
+  const WalletTypeIcon = getWalletTypeIcon(wallet.wallet_type);
 
   return (
-    <Card className="w-full">
-      <CardHeader className="flex gap-3 justify-between">
-        <div className="flex flex-col">
-          <p className="text-md font-semibold">{wallet.name}</p>
-          <Chip 
-            color={getWalletTypeColor(wallet.wallet_type)}
-            size="sm" 
-            variant="flat"
-          >
-            {getWalletTypeLabel(wallet.wallet_type)}
-          </Chip>
+    <Card className="hover:shadow-md transition-shadow">
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <div className="flex items-center space-x-2">
+          <WalletTypeIcon className="h-4 w-4 text-muted-foreground" />
+          <CardTitle className="text-sm font-medium">{wallet.name}</CardTitle>
         </div>
-        <div className="flex gap-1">
-          {onView && (
-            <Button
-              size="sm"
-              variant="light"
-              onPress={() => onView(wallet)}
-            >
-              View
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="h-8 w-8 p-0">
+              <MoreHorizontal className="h-4 w-4" />
             </Button>
-          )}
-          {onEdit && (
-            <Button
-              size="sm"
-              variant="light"
-              color="primary"
-              onPress={() => onEdit(wallet)}
-            >
-              Edit
-            </Button>
-          )}
-          {onDelete && (
-            <Button
-              size="sm"
-              variant="light"
-              color="danger"
-              onPress={() => onDelete(wallet)}
-            >
-              Delete
-            </Button>
-          )}
-        </div>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            {onView && (
+              <DropdownMenuItem onClick={() => onView(wallet)}>
+                View Details
+              </DropdownMenuItem>
+            )}
+            {onEdit && (
+              <DropdownMenuItem onClick={() => onEdit(wallet)}>
+                <Edit className="mr-2 h-4 w-4" />
+                Edit
+              </DropdownMenuItem>
+            )}
+            {onDelete && (
+              <DropdownMenuItem 
+                onClick={() => onDelete(wallet)}
+                className="text-destructive"
+              >
+                <Trash2 className="mr-2 h-4 w-4" />
+                Delete
+              </DropdownMenuItem>
+            )}
+          </DropdownMenuContent>
+        </DropdownMenu>
       </CardHeader>
       
-      <CardBody className="pt-0">
-        <div className="flex flex-col gap-2">
-          <div className="flex justify-between items-center">
-            <span className="text-small text-default-500">Current Balance</span>
-            <span className={`text-lg font-bold ${balanceColor}`}>
-              {formatCurrency(parseFloat(wallet.current_balance), wallet.currency)}
-            </span>
-          </div>
-          
-          
-          <div className="flex justify-between items-center">
-            <span className="text-small text-default-500">Status</span>
-            <Chip 
-              color={wallet.is_active ? 'success' : 'default'}
-              size="sm"
-              variant="flat"
-            >
-              {wallet.is_active ? 'Active' : 'Inactive'}
-            </Chip>
-          </div>
+      <CardContent className="space-y-4">
+        {/* Wallet Type Badge */}
+        <div className="flex items-center justify-between">
+          <span className="text-sm text-muted-foreground">Type</span>
+          <Badge variant={getWalletTypeColor(wallet.wallet_type)}>
+            {getWalletTypeLabel(wallet.wallet_type)}
+          </Badge>
         </div>
-      </CardBody>
+        
+        {/* Current Balance */}
+        <div className="flex items-center justify-between">
+          <span className="text-sm text-muted-foreground">Balance</span>
+          <span className={`text-lg font-bold ${balanceColor}`}>
+            {formatCurrency(parseFloat(wallet.current_balance), wallet.currency)}
+          </span>
+        </div>
+        
+        {/* Status */}
+        <div className="flex items-center justify-between">
+          <span className="text-sm text-muted-foreground">Status</span>
+          <Badge variant={wallet.is_active ? 'default' : 'secondary'}>
+            {wallet.is_active ? 'Active' : 'Inactive'}
+          </Badge>
+        </div>
+      </CardContent>
     </Card>
   );
 }

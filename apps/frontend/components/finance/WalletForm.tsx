@@ -1,17 +1,25 @@
 'use client';
 
 import { useState } from 'react';
-import { 
-  Modal, 
-  ModalContent, 
-  ModalHeader, 
-  ModalBody, 
-  ModalFooter
-} from "@heroui/modal";
-import { Button } from "@heroui/button";
-import { Input } from "@heroui/input";
-import { Select, SelectItem } from "@heroui/select";
-import { Switch } from "@heroui/switch";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 import { Wallet, CreateWalletData } from "@/types";
 
 interface WalletFormProps {
@@ -54,6 +62,19 @@ export default function WalletForm({
 
   const [errors, setErrors] = useState<Partial<CreateWalletData>>({});
 
+  // Update form data when wallet prop changes
+  useState(() => {
+    if (wallet) {
+      setFormData({
+        name: wallet.name || '',
+        wallet_type: wallet.wallet_type || 'cash',
+        currency: wallet.currency || 'IDR',
+        initial_balance: wallet.initial_balance || '0',
+        is_active: wallet.is_active !== undefined ? wallet.is_active : true
+      });
+    }
+  });
+
   const validateForm = (): boolean => {
     const newErrors: Partial<CreateWalletData> = {};
 
@@ -95,101 +116,121 @@ export default function WalletForm({
   };
 
   return (
-    <Modal 
-      isOpen={isOpen} 
-      onClose={handleClose}
-      placement="top-center"
-    >
-      <ModalContent>
-        <ModalHeader className="flex flex-col gap-1">
-          {wallet ? 'Edit Wallet' : 'Create New Wallet'}
-        </ModalHeader>
+    <Dialog open={isOpen} onOpenChange={handleClose}>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>
+            {wallet ? 'Edit Wallet' : 'Create New Wallet'}
+          </DialogTitle>
+          <DialogDescription>
+            {wallet ? 'Update your wallet information.' : 'Add a new wallet to track your finances.'}
+          </DialogDescription>
+        </DialogHeader>
         
-        <ModalBody>
-          <Input
-            autoFocus
-            label="Wallet Name"
-            placeholder="Enter wallet name"
-            value={formData.name}
-            onValueChange={(value) => setFormData(prev => ({ ...prev, name: value }))}
-            isInvalid={!!errors.name}
-            errorMessage={errors.name}
-          />
+        <div className="grid gap-4 py-4">
+          <div className="grid gap-2">
+            <Label htmlFor="name">Wallet Name</Label>
+            <Input
+              id="name"
+              placeholder="Enter wallet name"
+              value={formData.name}
+              onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+              className={errors.name ? "border-destructive" : ""}
+            />
+            {errors.name && (
+              <p className="text-sm text-destructive">{errors.name}</p>
+            )}
+          </div>
 
-          <Select
-            label="Wallet Type"
-            placeholder="Select wallet type"
-            selectedKeys={[formData.wallet_type]}
-            onSelectionChange={(keys) => {
-              const selectedKey = Array.from(keys)[0] as string;
-              setFormData(prev => ({ ...prev, wallet_type: selectedKey as any }));
-            }}
-          >
-            {walletTypes.map((type) => (
-              <SelectItem key={type.key} value={type.key}>
-                {type.label}
-              </SelectItem>
-            ))}
-          </Select>
+          <div className="grid gap-2">
+            <Label htmlFor="wallet-type">Wallet Type</Label>
+            <Select 
+              value={formData.wallet_type} 
+              onValueChange={(value) => 
+                setFormData(prev => ({ ...prev, wallet_type: value as any }))
+              }
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select wallet type" />
+              </SelectTrigger>
+              <SelectContent>
+                {walletTypes.map((type) => (
+                  <SelectItem key={type.key} value={type.key}>
+                    {type.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
 
-          <Select
-            label="Currency"
-            placeholder="Select currency"
-            selectedKeys={[formData.currency]}
-            onSelectionChange={(keys) => {
-              const selectedKey = Array.from(keys)[0] as string;
-              setFormData(prev => ({ ...prev, currency: selectedKey }));
-            }}
-          >
-            {currencies.map((currency) => (
-              <SelectItem key={currency.key} value={currency.key}>
-                {currency.label}
-              </SelectItem>
-            ))}
-          </Select>
+          <div className="grid gap-2">
+            <Label htmlFor="currency">Currency</Label>
+            <Select 
+              value={formData.currency} 
+              onValueChange={(value) => 
+                setFormData(prev => ({ ...prev, currency: value }))
+              }
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select currency" />
+              </SelectTrigger>
+              <SelectContent>
+                {currencies.map((currency) => (
+                  <SelectItem key={currency.key} value={currency.key}>
+                    {currency.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
 
-          <Input
-            label="Initial Balance"
-            placeholder="0"
-            type="number"
-            step="0.01"
-            value={formData.initial_balance}
-            onValueChange={(value) => setFormData(prev => ({ ...prev, initial_balance: value }))}
-            isInvalid={!!errors.initial_balance}
-            errorMessage={errors.initial_balance}
-            startContent={
-              <div className="pointer-events-none flex items-center">
-                <span className="text-default-400 text-small">{formData.currency}</span>
-              </div>
-            }
-          />
+          <div className="grid gap-2">
+            <Label htmlFor="initial-balance">Initial Balance</Label>
+            <div className="relative">
+              <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground text-sm">
+                {formData.currency}
+              </span>
+              <Input
+                id="initial-balance"
+                type="number"
+                step="0.01"
+                placeholder="0"
+                value={formData.initial_balance}
+                onChange={(e) => setFormData(prev => ({ ...prev, initial_balance: e.target.value }))}
+                className={`pl-12 ${errors.initial_balance ? "border-destructive" : ""}`}
+              />
+            </div>
+            {errors.initial_balance && (
+              <p className="text-sm text-destructive">{errors.initial_balance}</p>
+            )}
+          </div>
 
-          <Switch
-            isSelected={formData.is_active}
-            onValueChange={(value) => setFormData(prev => ({ ...prev, is_active: value }))}
-          >
-            <span className="text-small">Active</span>
-          </Switch>
-        </ModalBody>
+          <div className="flex items-center space-x-2">
+            <Switch
+              id="is-active"
+              checked={formData.is_active}
+              onCheckedChange={(checked) => setFormData(prev => ({ ...prev, is_active: checked }))}
+            />
+            <Label htmlFor="is-active">Active</Label>
+          </div>
+        </div>
         
-        <ModalFooter>
+        <DialogFooter>
           <Button 
-            color="danger" 
-            variant="flat" 
-            onPress={handleClose}
+            variant="outline" 
+            onClick={handleClose}
             disabled={isLoading}
           >
             Cancel
           </Button>
           <Button 
-            color="primary" 
-            onPress={handleSubmit}
-            isLoading={isLoading}
+            onClick={handleSubmit}
+            disabled={isLoading}
           >
-            {wallet ? 'Update' : 'Create'} Wallet
+            {isLoading ? "Saving..." : (wallet ? 'Update' : 'Create')}
           </Button>
-        </ModalFooter>
-      </ModalContent>
-    </Modal>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
