@@ -1,0 +1,20 @@
+{
+  "commands": {
+    "update-progress": {
+      "description": "Update progress tracking across all CLAUDE.md files and sync todo systems",
+      "prompt": "Please update the progress tracking across all layers of the todo system:\n\n1. Read current TodoRead status\n2. Check and update root CLAUDE.md sprint progress\n3. Check apps/frontend/CLAUDE.md and apps/backend/CLAUDE.md for technical progress\n4. Sync completion dates and remove duplicate tasks\n5. Update progress metrics and percentages\n6. Commit changes with proper commit message\n\nFocus on:\n- Marking completed tasks with dates\n- Updating progress percentages\n- Ensuring consistency across all 3 todo layers\n- Clean up redundant or outdated tasks"
+    },
+    "commit-with-context": {
+      "description": "Create a contextual commit with proper formatting",
+      "prompt": "Create a commit with the following steps:\n\n1. Run git status and git diff to understand changes\n2. Analyze the changes and create a meaningful commit message\n3. Follow conventional commit format\n4. Include context about what was implemented/fixed\n5. Add the Claude Code footer\n\nUse the format:\n<type>(<scope>): <description>\n\n<body>\n\n🤖 Generated with Claude Code\nCo-Authored-By: Claude <noreply@anthropic.com>"
+    },
+    "sync-todos": {
+      "description": "Synchronize todos across all 3 layers (Session, App, Root)",
+      "prompt": "Synchronize the 3-layer todo system:\n\n1. Read current session TodoRead\n2. Check apps/frontend/CLAUDE.md todos\n3. Check apps/backend/CLAUDE.md todos  \n4. Check root CLAUDE.md sprint goals\n5. Identify and remove duplicates\n6. Ensure consistent completion dates\n7. Update progress metrics\n8. Commit synchronization changes\n\nEnsure no task is duplicated across layers and all completion dates are accurate."
+    },
+    "start-sprint": {
+      "description": "Start a new sprint with proper planning and todo setup",
+      "prompt": "Start a new sprint with the following steps:\n\n1. Review previous sprint completion status\n2. Archive completed sprints\n3. Create new sprint goals in root CLAUDE.md\n4. Break down goals into technical tasks for app-specific CLAUDE.md files\n5. Initialize session TodoWrite with immediate tasks\n6. Update sprint metrics and dates\n7. Commit sprint initialization\n\nFocus on clear, actionable tasks with realistic timelines."
+    }
+  }
+}
