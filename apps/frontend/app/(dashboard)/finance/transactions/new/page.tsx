@@ -64,9 +64,9 @@ export default function NewTransactionPage() {
           financeAPI.getTags()
         ]);
         
-        setWallets(walletsRes.data.results);
-        setCategories(categoriesRes.data);
-        setTags(tagsRes.data);
+        setWallets(Array.isArray(walletsRes.data.results) ? walletsRes.data.results : []);
+        setCategories(Array.isArray(categoriesRes.data) ? categoriesRes.data : []);
+        setTags(Array.isArray(tagsRes.data) ? tagsRes.data : []);
         setError(null);
       } catch (err) {
         console.error('Error fetching data:', err);
@@ -134,8 +134,8 @@ export default function NewTransactionPage() {
     setSelectedTags(selectedTags.filter(tag => tag.id !== tagId));
   };
 
-  const filteredCategories = categories.filter(cat => cat.type === formData.type);
-  const availableTags = tags.filter(tag => !selectedTags.find(t => t.id === tag.id));
+  const filteredCategories = Array.isArray(categories) ? categories.filter(cat => cat.type === formData.type) : [];
+  const availableTags = Array.isArray(tags) ? tags.filter(tag => !selectedTags.find(t => t.id === tag.id)) : [];
 
   if (loading) {
     return (

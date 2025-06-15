@@ -71,9 +71,9 @@ export default function EditTransactionPage() {
         
         const transactionData = transactionRes.data;
         setTransaction(transactionData);
-        setWallets(walletsRes.data.results);
-        setCategories(categoriesRes.data);
-        setTags(tagsRes.data);
+        setWallets(Array.isArray(walletsRes.data.results) ? walletsRes.data.results : []);
+        setCategories(Array.isArray(categoriesRes.data) ? categoriesRes.data : []);
+        setTags(Array.isArray(tagsRes.data) ? tagsRes.data : []);
 
         // Populate form with transaction data
         setFormData({
@@ -161,8 +161,8 @@ export default function EditTransactionPage() {
     setSelectedTags(selectedTags.filter(tag => tag.id !== tagId));
   };
 
-  const filteredCategories = categories.filter(cat => cat.type === formData.type);
-  const availableTags = tags.filter(tag => !selectedTags.find(t => t.id === tag.id));
+  const filteredCategories = Array.isArray(categories) ? categories.filter(cat => cat.type === formData.type) : [];
+  const availableTags = Array.isArray(tags) ? tags.filter(tag => !selectedTags.find(t => t.id === tag.id)) : [];
 
   if (loading) {
     return (
