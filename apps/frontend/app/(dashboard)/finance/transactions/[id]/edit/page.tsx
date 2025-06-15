@@ -387,17 +387,17 @@ export default function EditTransactionPage() {
                 Category (Optional)
               </Label>
               <Select 
-                value={formData.category?.toString() || ""} 
+                value={formData.category?.toString() || "none"} 
                 onValueChange={(value) => setFormData(prev => ({ 
                   ...prev, 
-                  category: value ? parseInt(value) : undefined 
+                  category: value === "none" ? undefined : parseInt(value) 
                 }))}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select category" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">No category</SelectItem>
+                  <SelectItem value="none">No category</SelectItem>
                   {filteredCategories.map((category) => (
                     <SelectItem key={category.id} value={category.id.toString()}>
                       {category.name}
