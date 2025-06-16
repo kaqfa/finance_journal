@@ -133,8 +133,28 @@ wealthwise-monorepo/
 - **Bug Fixes**: 4/4 (100%) ✅
 - **Overall Sprint**: 8/8 (100%) ✅ **FULLY COMPLETED**
 
-### 🎯 Current Sprint Week 29 - Quality & Polish
-**CURRENT FOCUS**: Code quality improvements and production readiness
+### 🎯 Sprint Week 29 - Documentation & Quality ✅ COMPLETED
+**STRATEGIC ACHIEVEMENT**: Complete API documentation and wallet form improvements
+
+#### API Documentation Enhancement (High Priority) ✅ COMPLETED
+- [x] API-DOC-001: Add missing /choices endpoints to API_REFERENCE.md - **Completed** (2025-06-16)
+- [x] API-DOC-002: Create custom command for updating API documentation - **Completed** (2025-06-16)
+- [x] API-DOC-003: Remove redundant api-documentation.md file and cleanup - **Completed** (2025-06-16)
+- [x] API-DOC-004: Enhance API_REFERENCE.md with comprehensive examples - **Completed** (2025-06-16)
+
+#### Wallet Management Improvements (High Priority) ✅ COMPLETED
+- [x] WALLET-001: Fix wallet edit form initial_balance field handling - **Completed** (2025-06-16)
+- [x] WALLET-002: Implement proper form state management with useEffect - **Completed** (2025-06-16)
+- [x] WALLET-003: Add read-only current_balance display in edit mode - **Completed** (2025-06-16)
+- [x] WALLET-004: Fix form validation for create vs edit modes - **Completed** (2025-06-16)
+
+### 📈 Progress Metrics
+- **API Documentation**: 4/4 (100%) ✅
+- **Wallet Improvements**: 4/4 (100%) ✅
+- **Overall Sprint**: 8/8 (100%) ✅ **FULLY COMPLETED**
+
+### 🎯 Current Sprint Week 30 - Quality & Testing
+**CURRENT FOCUS**: Code quality improvements and testing infrastructure
 
 #### Code Quality & Testing (High Priority)
 - [ ] TESTING-001: Add comprehensive unit tests for components
