@@ -2,11 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import Image from "next/image";
+
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { navigation } from "@/lib/navigation";
-import Image from "next/image";
 
 interface SidebarProps {
   className?: string;
@@ -16,17 +17,22 @@ export function Sidebar({ className }: SidebarProps) {
   const pathname = usePathname();
 
   return (
-    <div className={cn("flex h-full w-64 flex-col border-r bg-background", className)}>
+    <div
+      className={cn(
+        "flex h-full w-64 flex-col border-r bg-background",
+        className,
+      )}
+    >
       {/* Logo */}
       <div className="flex h-16 items-center border-b px-6">
-        <Link href="/dashboard" className="flex items-center space-x-2">
+        <Link className="flex items-center space-x-2" href="/dashboard">
           <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
             <Image
-              src="/logo.svg"
               alt="WealthWise"
-              width={20}
-              height={20}
               className="h-5 w-5 text-primary-foreground"
+              height={20}
+              src="/logo.svg"
+              width={20}
             />
           </div>
           <span className="text-lg font-semibold">WealthWise</span>
@@ -45,29 +51,33 @@ export function Sidebar({ className }: SidebarProps) {
                 {section.items.map((item, itemIndex) => {
                   const isActive = pathname === item.href;
                   const Icon = item.icon;
-                  
+
                   return (
                     <Link
                       key={itemIndex}
-                      href={item.href || "#"}
                       className={cn(
                         "group flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
                         isActive
                           ? "bg-primary text-primary-foreground"
-                          : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                          : "text-muted-foreground hover:bg-accent hover:text-accent-foreground",
                       )}
+                      href={item.href || "#"}
                     >
                       {Icon && (
-                        <Icon className={cn(
-                          "h-4 w-4 shrink-0",
-                          isActive ? "text-primary-foreground" : "text-muted-foreground group-hover:text-accent-foreground"
-                        )} />
+                        <Icon
+                          className={cn(
+                            "h-4 w-4 shrink-0",
+                            isActive
+                              ? "text-primary-foreground"
+                              : "text-muted-foreground group-hover:text-accent-foreground",
+                          )}
+                        />
                       )}
                       <span className="truncate">{item.title}</span>
                       {item.badge && (
-                        <Badge 
-                          variant={isActive ? "secondary" : "outline"}
+                        <Badge
                           className="ml-auto text-xs"
+                          variant={isActive ? "secondary" : "outline"}
                         >
                           {item.badge}
                         </Badge>
@@ -85,7 +95,9 @@ export function Sidebar({ className }: SidebarProps) {
       <div className="border-t p-4">
         <div className="flex items-center gap-3 rounded-lg bg-accent/50 p-3">
           <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center">
-            <span className="text-xs font-semibold text-primary-foreground">JD</span>
+            <span className="text-xs font-semibold text-primary-foreground">
+              JD
+            </span>
           </div>
           <div className="flex-1 truncate">
             <p className="text-sm font-medium">John Doe</p>

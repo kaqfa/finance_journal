@@ -1,8 +1,14 @@
 "use client";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 const transactions = [
   {
@@ -12,16 +18,16 @@ const transactions = [
     amount: "+Rp 15,500,000",
     date: "2 hours ago",
     category: "Salary",
-    avatar: "💰"
+    avatar: "💰",
   },
   {
     id: 2,
     type: "expense",
     description: "Grocery Shopping",
     amount: "-Rp 450,000",
-    date: "4 hours ago", 
+    date: "4 hours ago",
     category: "Food",
-    avatar: "🛒"
+    avatar: "🛒",
   },
   {
     id: 3,
@@ -30,7 +36,7 @@ const transactions = [
     amount: "-Rp 2,500,000",
     date: "1 day ago",
     category: "Investment",
-    avatar: "📈"
+    avatar: "📈",
   },
   {
     id: 4,
@@ -39,7 +45,7 @@ const transactions = [
     amount: "-Rp 350,000",
     date: "2 days ago",
     category: "Utilities",
-    avatar: "⚡"
+    avatar: "⚡",
   },
   {
     id: 5,
@@ -48,8 +54,8 @@ const transactions = [
     amount: "+Rp 3,500,000",
     date: "3 days ago",
     category: "Freelance",
-    avatar: "💻"
-  }
+    avatar: "💻",
+  },
 ];
 
 export function RecentTransactions() {
@@ -57,25 +63,27 @@ export function RecentTransactions() {
     <Card>
       <CardHeader className="pb-4">
         <CardTitle className="text-lg">Recent Transactions</CardTitle>
-        <CardDescription>
-          Your latest financial activities
-        </CardDescription>
+        <CardDescription>Your latest financial activities</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="space-y-6">
           {transactions.map((transaction) => (
             <div key={transaction.id} className="flex items-center gap-4">
               <Avatar className="h-10 w-10">
-                <AvatarFallback className="text-sm">{transaction.avatar}</AvatarFallback>
+                <AvatarFallback className="text-sm">
+                  {transaction.avatar}
+                </AvatarFallback>
               </Avatar>
               <div className="flex-1 space-y-1">
                 <p className="text-sm font-medium leading-none">
                   {transaction.description}
                 </p>
                 <div className="flex items-center gap-2">
-                  <Badge 
-                    variant={transaction.type === "income" ? "default" : "secondary"}
+                  <Badge
                     className="text-xs"
+                    variant={
+                      transaction.type === "income" ? "default" : "secondary"
+                    }
                   >
                     {transaction.category}
                   </Badge>
@@ -85,11 +93,13 @@ export function RecentTransactions() {
                   </p>
                 </div>
               </div>
-              <div className={`font-semibold text-sm ${
-                transaction.type === "income" 
-                  ? "text-green-600 dark:text-green-400" 
-                  : "text-red-600 dark:text-red-400"
-              }`}>
+              <div
+                className={`font-semibold text-sm ${
+                  transaction.type === "income"
+                    ? "text-green-600 dark:text-green-400"
+                    : "text-red-600 dark:text-red-400"
+                }`}
+              >
                 {transaction.amount}
               </div>
             </div>

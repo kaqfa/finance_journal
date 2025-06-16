@@ -1,21 +1,28 @@
 "use client";
 
+import { Plus, TrendingUp, Wallet } from "lucide-react";
+import Link from "next/link";
+
 import { useAuth } from "@/contexts/AuthContext";
-import { PageHeader } from "@/components/layout/page-header";
 import { OverviewCards } from "@/components/dashboard/overview-cards";
 import { RecentTransactions } from "@/components/dashboard/recent-transactions";
 import { ExpenseChart } from "@/components/dashboard/expense-chart";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Plus, TrendingUp, Wallet } from "lucide-react";
-import Link from "next/link";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 export default function DashboardPage() {
   const { user } = useAuth();
 
-  const userName = user?.first_name && user?.last_name 
-    ? `${user.first_name} ${user.last_name}`
-    : user?.username || "User";
+  const userName =
+    user?.first_name && user?.last_name
+      ? `${user.first_name} ${user.last_name}`
+      : user?.username || "User";
 
   return (
     <div className="flex-1 space-y-6 p-6 md:p-8">
@@ -37,13 +44,13 @@ export default function DashboardPage() {
             Add Transaction
           </Link>
         </Button>
-        <Button variant="outline" asChild>
+        <Button asChild variant="outline">
           <Link href="/finance/wallets">
             <Wallet className="mr-2 h-4 w-4" />
             Manage Wallets
           </Link>
         </Button>
-        <Button variant="outline" asChild>
+        <Button asChild variant="outline">
           <Link href="/invest/portfolios">
             <TrendingUp className="mr-2 h-4 w-4" />
             Portfolios
@@ -81,16 +88,36 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="grid gap-3 sm:grid-cols-2">
-              <Button variant="ghost" size="sm" className="justify-start" asChild>
+              <Button
+                asChild
+                className="justify-start"
+                size="sm"
+                variant="ghost"
+              >
                 <Link href="/finance/wallets">Wallets</Link>
               </Button>
-              <Button variant="ghost" size="sm" className="justify-start" asChild>
+              <Button
+                asChild
+                className="justify-start"
+                size="sm"
+                variant="ghost"
+              >
                 <Link href="/finance/transactions">Transactions</Link>
               </Button>
-              <Button variant="ghost" size="sm" className="justify-start" asChild>
+              <Button
+                asChild
+                className="justify-start"
+                size="sm"
+                variant="ghost"
+              >
                 <Link href="/finance/categories">Categories</Link>
               </Button>
-              <Button variant="ghost" size="sm" className="justify-start" asChild>
+              <Button
+                asChild
+                className="justify-start"
+                size="sm"
+                variant="ghost"
+              >
                 <Link href="/finance/transfers">Transfers</Link>
               </Button>
             </div>
@@ -109,16 +136,36 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="grid gap-3 sm:grid-cols-2">
-              <Button variant="ghost" size="sm" className="justify-start" asChild>
+              <Button
+                asChild
+                className="justify-start"
+                size="sm"
+                variant="ghost"
+              >
                 <Link href="/invest/portfolios">Portfolios</Link>
               </Button>
-              <Button variant="ghost" size="sm" className="justify-start" asChild>
+              <Button
+                asChild
+                className="justify-start"
+                size="sm"
+                variant="ghost"
+              >
                 <Link href="/invest/holdings">Holdings</Link>
               </Button>
-              <Button variant="ghost" size="sm" className="justify-start" asChild>
+              <Button
+                asChild
+                className="justify-start"
+                size="sm"
+                variant="ghost"
+              >
                 <Link href="/invest/assets">Assets</Link>
               </Button>
-              <Button variant="ghost" size="sm" className="justify-start" asChild>
+              <Button
+                asChild
+                className="justify-start"
+                size="sm"
+                variant="ghost"
+              >
                 <Link href="/analytics">Analytics</Link>
               </Button>
             </div>

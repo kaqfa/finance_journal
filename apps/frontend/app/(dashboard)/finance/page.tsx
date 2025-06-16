@@ -1,19 +1,25 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { OverviewCards } from "@/components/dashboard/overview-cards";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { 
-  Plus, 
-  Wallet, 
-  ArrowUpDown, 
-  TrendingUp, 
+import {
+  Plus,
+  Wallet,
+  ArrowUpDown,
+  TrendingUp,
   Receipt,
   Tags,
-  FolderOpen 
+  FolderOpen,
 } from "lucide-react";
 import Link from "next/link";
+
+import { OverviewCards } from "@/components/dashboard/overview-cards";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 const quickActions = [
   {
@@ -21,43 +27,43 @@ const quickActions = [
     description: "Manage your wallets and accounts",
     icon: Wallet,
     href: "/finance/wallets",
-    color: "text-blue-600"
+    color: "text-blue-600",
   },
   {
     title: "Transactions",
     description: "View and add transactions",
     icon: Receipt,
     href: "/finance/transactions",
-    color: "text-green-600"
+    color: "text-green-600",
   },
   {
     title: "Categories",
     description: "Organize transaction categories",
     icon: FolderOpen,
     href: "/finance/categories",
-    color: "text-purple-600"
+    color: "text-purple-600",
   },
   {
     title: "Tags",
     description: "Manage transaction tags",
     icon: Tags,
     href: "/finance/tags",
-    color: "text-orange-600"
+    color: "text-orange-600",
   },
   {
     title: "Transfers",
     description: "Transfer between wallets",
     icon: ArrowUpDown,
     href: "/finance/transfers",
-    color: "text-indigo-600"
+    color: "text-indigo-600",
   },
   {
     title: "Reports",
     description: "Financial insights and analytics",
     icon: TrendingUp,
     href: "/finance/reports",
-    color: "text-red-600"
-  }
+    color: "text-red-600",
+  },
 ];
 
 export default function FinancePage() {
@@ -79,7 +85,7 @@ export default function FinancePage() {
             Add Transaction
           </Link>
         </Button>
-        <Button variant="outline" asChild>
+        <Button asChild variant="outline">
           <Link href="/finance/wallets">
             <Wallet className="mr-2 h-4 w-4" />
             Manage Wallets
@@ -96,9 +102,13 @@ export default function FinancePage() {
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {quickActions.map((action) => {
             const Icon = action.icon;
+
             return (
-              <Card key={action.title} className="group transition-all hover:shadow-md">
-                <Link href={action.href} className="block">
+              <Card
+                key={action.title}
+                className="group transition-all hover:shadow-md"
+              >
+                <Link className="block" href={action.href}>
                   <CardHeader className="pb-3">
                     <div className="flex items-center gap-3">
                       <div className="rounded-lg bg-muted p-2">

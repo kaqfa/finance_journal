@@ -21,7 +21,12 @@ interface PageHeaderProps {
   children?: React.ReactNode;
 }
 
-export function PageHeader({ title, description, breadcrumbs, children }: PageHeaderProps) {
+export function PageHeader({
+  title,
+  description,
+  breadcrumbs,
+  children,
+}: PageHeaderProps) {
   return (
     <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
       <div className="space-y-2">
@@ -52,11 +57,7 @@ export function PageHeader({ title, description, breadcrumbs, children }: PageHe
           )}
         </div>
       </div>
-      {children && (
-        <div className="flex items-center gap-2">
-          {children}
-        </div>
-      )}
+      {children && <div className="flex items-center gap-2">{children}</div>}
     </div>
   );
 }

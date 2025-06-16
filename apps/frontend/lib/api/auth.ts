@@ -1,6 +1,6 @@
-import { baseAxios, authApi, createEndpoint } from '../config/axios';
+import { baseAxios, authApi, createEndpoint } from "../config/axios";
 
-const AUTH_BASE = 'auth';
+const AUTH_BASE = "auth";
 
 const authAPI = {
   register: (data: {
@@ -13,36 +13,48 @@ const authAPI = {
   }) => {
     return baseAxios.post(createEndpoint(`${AUTH_BASE}/register/`), data);
   },
-  
+
   login: (data: { username: string; password: string }) => {
     return baseAxios.post(createEndpoint(`${AUTH_BASE}/login/`), data);
   },
-  
+
   logout: (refreshToken: string) => {
-    return authApi.post(createEndpoint(`${AUTH_BASE}/logout/`), { refresh: refreshToken });
+    return authApi.post(createEndpoint(`${AUTH_BASE}/logout/`), {
+      refresh: refreshToken,
+    });
   },
-  
+
   getProfile: () => {
     return authApi.get(createEndpoint(`${AUTH_BASE}/profile/`));
   },
-  
-  updateProfile: (data: { first_name?: string; last_name?: string; email?: string }) => {
+
+  updateProfile: (data: {
+    first_name?: string;
+    last_name?: string;
+    email?: string;
+  }) => {
     return authApi.patch(createEndpoint(`${AUTH_BASE}/profile/`), data);
   },
-  
-  changePassword: (data: { old_password: string; new_password: string; new_password2: string }) => {
+
+  changePassword: (data: {
+    old_password: string;
+    new_password: string;
+    new_password2: string;
+  }) => {
     return authApi.put(createEndpoint(`${AUTH_BASE}/password/change/`), data);
   },
-  
+
   resetPassword: (email: string) => {
-    return baseAxios.post(createEndpoint(`${AUTH_BASE}/password/reset/`), { email });
+    return baseAxios.post(createEndpoint(`${AUTH_BASE}/password/reset/`), {
+      email,
+    });
   },
 
   refreshToken: (refreshToken: string) => {
     return baseAxios.post(createEndpoint(`${AUTH_BASE}/token/refresh/`), {
       refresh: refreshToken,
     });
-  }
+  },
 };
 
 export default authAPI;

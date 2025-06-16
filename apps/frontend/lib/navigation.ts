@@ -1,8 +1,8 @@
-import { 
-  LayoutDashboard, 
-  Wallet, 
-  TrendingUp, 
-  PieChart, 
+import {
+  LayoutDashboard,
+  Wallet,
+  TrendingUp,
+  PieChart,
   CreditCard,
   ArrowUpDown,
   Users,
@@ -10,7 +10,7 @@ import {
   HelpCircle,
   FileText,
   Target,
-  BarChart3
+  BarChart3,
 } from "lucide-react";
 
 export interface NavItem {
@@ -39,9 +39,9 @@ export const navigation: NavSection[] = [
         title: "Analytics",
         href: "/analytics",
         icon: BarChart3,
-        badge: "New"
-      }
-    ]
+        badge: "New",
+      },
+    ],
   },
   {
     title: "Finance",
@@ -53,7 +53,7 @@ export const navigation: NavSection[] = [
       },
       {
         title: "Transactions",
-        href: "/finance/transactions", 
+        href: "/finance/transactions",
         icon: ArrowUpDown,
       },
       {
@@ -65,8 +65,8 @@ export const navigation: NavSection[] = [
         title: "Transfers",
         href: "/finance/transfers",
         icon: CreditCard,
-      }
-    ]
+      },
+    ],
   },
   {
     title: "Investment",
@@ -85,8 +85,8 @@ export const navigation: NavSection[] = [
         title: "Assets",
         href: "/invest/assets",
         icon: BarChart3,
-      }
-    ]
+      },
+    ],
   },
   {
     title: "Settings",
@@ -110,7 +110,7 @@ export const navigation: NavSection[] = [
         title: "Help",
         href: "/help",
         icon: HelpCircle,
-      }
-    ]
-  }
+      },
+    ],
+  },
 ];

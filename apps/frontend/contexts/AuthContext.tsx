@@ -1,9 +1,21 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
 import { useRouter, usePathname } from "next/navigation";
+
 import { authAPI } from "@/lib/api";
-import { setTokens, getTokens, removeTokens, isAuthenticated } from "@/lib/auth";
+import {
+  setTokens,
+  getTokens,
+  removeTokens,
+  isAuthenticated,
+} from "@/lib/auth";
 
 // Define User type
 interface User {
@@ -40,19 +52,15 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 // Protected routes - paths that require authentication
 const protectedRoutes = [
-  '/dashboard',
-  '/journal',
-  '/finance',
-  '/info',
-  '/settings',
+  "/dashboard",
+  "/journal",
+  "/finance",
+  "/info",
+  "/settings",
 ];
 
 // Public routes - paths that don't require authentication
-const publicRoutes = [
-  '/login',
-  '/register',
-  '/forget-password',
-];
+const publicRoutes = ["/login", "/register", "/forget-password"];
 
 // AuthProvider component
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
@@ -73,35 +81,42 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       // Skip auth check for public routes
       if (publicRoutes.includes(pathname)) {
         setLoading(false);
+
         return;
       }
 
       setLoading(true);
-      
+
       if (!isAuthenticated()) {
         // If the route requires authentication, redirect to login
-        if (protectedRoutes.some(route => pathname.startsWith(route))) {
-          router.push('/login');
+        if (protectedRoutes.some((route) => pathname.startsWith(route))) {
+          router.push("/login");
         }
         setLoading(false);
+
         return;
       }
 
       // Get user profile
       const response = await authAPI.getProfile();
+
       setUser(response.data);
-      
+
       // If on login page but authenticated, redirect to dashboard
-      if (pathname === '/login' || pathname === '/register' || pathname === '/forget-password') {
-        router.push('/dashboard');
+      if (
+        pathname === "/login" ||
+        pathname === "/register" ||
+        pathname === "/forget-password"
+      ) {
+        router.push("/dashboard");
       }
     } catch (err) {
       console.error("Auth check error:", err);
-      
+
       // If auth error and on protected route, redirect to login
-      if (protectedRoutes.some(route => pathname.startsWith(route))) {
+      if (protectedRoutes.some((route) => pathname.startsWith(route))) {
         removeTokens();
-        router.push('/login');
+        router.push("/login");
       }
     } finally {
       setLoading(false);
@@ -113,23 +128,24 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       setLoading(true);
       setError(null);
-      
+
       const response = await authAPI.login({ username, password });
-      console.log('Login response:', response.data); // Debug log
-      
+
+      console.log("Login response:", response.data); // Debug log
+
       // Store tokens
       setTokens({
         access: response.data.tokens.access,
         refresh: response.data.tokens.refresh,
       });
-      
+
       // Set user data
       setUser(response.data.user);
-      
+
       // Redirect to dashboard
-      router.push('/dashboard');
+      router.push("/dashboard");
     } catch (err: any) {
-      console.error('Login error:', err); // Debug log
+      console.error("Login error:", err); // Debug log
       setError(err.response?.data?.error || err.message || "Login failed");
       throw err;
     } finally {
@@ -142,13 +158,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       setLoading(true);
       setError(null);
-      
+
       await authAPI.register(userData);
-      
+
       // Redirect to login page
-      router.push('/login?registered=true');
+      router.push("/login?registered=true");
     } catch (err: any) {
-      setError(err.response?.data?.error || err.message || "Registration failed");
+      setError(
+        err.response?.data?.error || err.message || "Registration failed",
+      );
       throw err;
     } finally {
       setLoading(false);
@@ -160,24 +178,24 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       setLoading(true);
       const tokens = getTokens();
-      
+
       if (tokens) {
         await authAPI.logout(tokens.refresh);
       }
-      
+
       // Clear tokens and user
       removeTokens();
       setUser(null);
-      
+
       // Redirect to login
-      router.push('/login');
+      router.push("/login");
     } catch (err: any) {
       console.error("Logout error:", err);
-      
+
       // Still remove tokens and user
       removeTokens();
       setUser(null);
-      router.push('/login');
+      router.push("/login");
     } finally {
       setLoading(false);
     }
@@ -201,17 +219,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={contextValue}>
-      {children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
   );
 };
 
 // Hook to use the auth context
 export const useAuth = () => {
   const context = useContext(AuthContext);
+
   if (context === undefined) {
     throw new Error("useAuth must be used within an AuthProvider");
   }
+
   return context;
 };

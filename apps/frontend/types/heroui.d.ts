@@ -1,10 +1,16 @@
 // fe/types/heroui.d.ts
-declare module '@heroui/spinner' {
-  import React from 'react';
+declare module "@heroui/spinner" {
+  import React from "react";
 
   export interface SpinnerProps {
-    size?: 'sm' | 'md' | 'lg';
-    color?: 'default' | 'primary' | 'secondary' | 'success' | 'warning' | 'danger';
+    size?: "sm" | "md" | "lg";
+    color?:
+      | "default"
+      | "primary"
+      | "secondary"
+      | "success"
+      | "warning"
+      | "danger";
     labelText?: string;
     className?: string;
     style?: React.CSSProperties;
@@ -13,18 +19,30 @@ declare module '@heroui/spinner' {
   export const Spinner: React.FC<SpinnerProps>;
 }
 
-declare module '@heroui/dropdown' {
-  import React from 'react';
+declare module "@heroui/dropdown" {
+  import React from "react";
 
   export interface DropdownProps {
     children: React.ReactNode;
-    placement?: 'top' | 'bottom' | 'right' | 'left' | 'top-start' | 'top-end' | 'bottom-start' | 'bottom-end' | 'left-start' | 'left-end' | 'right-start' | 'right-end';
+    placement?:
+      | "top"
+      | "bottom"
+      | "right"
+      | "left"
+      | "top-start"
+      | "top-end"
+      | "bottom-start"
+      | "bottom-end"
+      | "left-start"
+      | "left-end"
+      | "right-start"
+      | "right-end";
     offset?: number;
-    type?: 'menu' | 'listbox';
+    type?: "menu" | "listbox";
     showArrow?: boolean;
     isDisabled?: boolean;
     className?: string;
-    variant?: 'solid' | 'bordered' | 'light' | 'flat' | 'faded' | 'shadow';
+    variant?: "solid" | "bordered" | "light" | "flat" | "faded" | "shadow";
   }
 
   export interface DropdownItemProps {
@@ -37,7 +55,13 @@ declare module '@heroui/dropdown' {
     isReadOnly?: boolean;
     isSelected?: boolean;
     className?: string;
-    color?: 'default' | 'primary' | 'secondary' | 'success' | 'warning' | 'danger';
+    color?:
+      | "default"
+      | "primary"
+      | "secondary"
+      | "success"
+      | "warning"
+      | "danger";
     onClick?: () => void;
   }
 
@@ -47,11 +71,11 @@ declare module '@heroui/dropdown' {
   }
 
   export interface DropdownMenuProps {
-    'aria-label'?: string;
+    "aria-label"?: string;
     items?: any[];
     children?: React.ReactNode;
     className?: string;
-    variant?: 'solid' | 'bordered' | 'light' | 'flat' | 'faded' | 'shadow';
+    variant?: "solid" | "bordered" | "light" | "flat" | "faded" | "shadow";
   }
 
   export const Dropdown: React.FC<DropdownProps>;
@@ -60,8 +84,8 @@ declare module '@heroui/dropdown' {
   export const DropdownItem: React.FC<DropdownItemProps>;
 }
 
-declare module '@heroui/avatar' {
-  import React from 'react';
+declare module "@heroui/avatar" {
+  import React from "react";
 
   export interface AvatarProps {
     src?: string;
@@ -70,9 +94,15 @@ declare module '@heroui/avatar' {
     icon?: React.ReactNode;
     as?: React.ElementType;
     children?: React.ReactNode;
-    size?: 'sm' | 'md' | 'lg';
-    radius?: 'none' | 'sm' | 'md' | 'lg' | 'full';
-    color?: 'default' | 'primary' | 'secondary' | 'success' | 'warning' | 'danger';
+    size?: "sm" | "md" | "lg";
+    radius?: "none" | "sm" | "md" | "lg" | "full";
+    color?:
+      | "default"
+      | "primary"
+      | "secondary"
+      | "success"
+      | "warning"
+      | "danger";
     isBordered?: boolean;
     isDisabled?: boolean;
     isFocusable?: boolean;

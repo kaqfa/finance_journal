@@ -1,11 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import Link from "next/link";
 import { authAPI } from "@/lib/api";
 
 export default function ForgetPasswordPage() {
@@ -22,15 +23,15 @@ export default function ForgetPasswordPage() {
     try {
       // Menggunakan authAPI untuk reset password
       await authAPI.resetPassword(email);
-      
+
       // Set success state untuk menampilkan konfirmasi
       setSuccess(true);
     } catch (err: any) {
       console.error("Password reset error:", err);
       setError(
-        err.response?.data?.detail || 
-        err.response?.data?.error || 
-        "Terjadi kesalahan saat memproses permintaan reset password. Silakan coba lagi."
+        err.response?.data?.detail ||
+          err.response?.data?.error ||
+          "Terjadi kesalahan saat memproses permintaan reset password. Silakan coba lagi.",
       );
     } finally {
       setIsLoading(false);
@@ -51,53 +52,48 @@ export default function ForgetPasswordPage() {
           {error}
         </div>
       )}
-      
+
       {success ? (
         <div className="space-y-4">
           <div className="bg-green-50 dark:bg-green-950 text-green-700 dark:text-green-300 p-4 rounded-lg text-center border border-green-200 dark:border-green-800">
             <h3 className="text-lg font-medium mb-2">Reset Email Sent!</h3>
             <p>
-              If an account exists with the email you entered, you&apos;ll receive password reset instructions.
+              If an account exists with the email you entered, you&apos;ll
+              receive password reset instructions.
             </p>
           </div>
           <Button asChild className="w-full">
-            <Link href="/login">
-              Return to Login
-            </Link>
+            <Link href="/login">Return to Login</Link>
           </Button>
         </div>
       ) : (
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form className="space-y-4" onSubmit={handleSubmit}>
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
             <Input
-              id="email"
-              type="email"
-              placeholder="Enter your email address"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
               required
               className="w-full"
+              id="email"
+              placeholder="Enter your email address"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
-          <Button
-            type="submit"
-            disabled={isLoading}
-            className="w-full"
-          >
+          <Button className="w-full" disabled={isLoading} type="submit">
             {isLoading ? "Sending..." : "Send Reset Link"}
           </Button>
         </form>
       )}
-      
+
       <Separator className="my-4" />
-      
+
       <div className="text-center">
         <p className="text-sm text-muted-foreground">
           Remember your password?{" "}
-          <Link 
-            href="/login" 
+          <Link
             className="text-primary hover:underline font-medium"
+            href="/login"
           >
             Sign in
           </Link>

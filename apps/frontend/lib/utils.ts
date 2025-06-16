@@ -14,7 +14,7 @@ export function cn(...inputs: ClassValue[]) {
 export function formatCurrency(
   value: number,
   currency = "IDR",
-  locale = "id-ID"
+  locale = "id-ID",
 ): string {
   return new Intl.NumberFormat(locale, {
     style: "currency",
@@ -30,7 +30,7 @@ export function formatCurrency(
 export function formatPercentage(
   value: number,
   minimumFractionDigits = 2,
-  maximumFractionDigits = 2
+  maximumFractionDigits = 2,
 ): string {
   return new Intl.NumberFormat("id-ID", {
     style: "percent",
@@ -44,13 +44,14 @@ export function formatPercentage(
  */
 export function formatDate(
   date: Date | string | number,
-  options: Intl.DateTimeFormatOptions = { 
-    year: "numeric", 
-    month: "long", 
-    day: "numeric" 
-  }
+  options: Intl.DateTimeFormatOptions = {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  },
 ): string {
   const d = new Date(date);
+
   return new Intl.DateTimeFormat("id-ID", options).format(d);
 }
 
@@ -59,6 +60,7 @@ export function formatDate(
  */
 export function truncateText(text: string, maxLength: number): string {
   if (text.length <= maxLength) return text;
+
   return `${text.substring(0, maxLength)}...`;
 }
 
@@ -79,16 +81,17 @@ export function deepClone<T>(obj: T): T {
 /**
  * Sleep function for async operations
  */
-export const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+export const sleep = (ms: number) =>
+  new Promise((resolve) => setTimeout(resolve, ms));
 
 /**
  * Get initials from a name
  */
 export function getInitials(name: string): string {
   return name
-    .split(' ')
-    .map(part => part.charAt(0))
-    .join('')
+    .split(" ")
+    .map((part) => part.charAt(0))
+    .join("")
     .toUpperCase()
     .substring(0, 2);
 }
@@ -97,11 +100,13 @@ export function getInitials(name: string): string {
  * Generate a random color
  */
 export function getRandomColor(): string {
-  const letters = '0123456789ABCDEF';
-  let color = '#';
+  const letters = "0123456789ABCDEF";
+  let color = "#";
+
   for (let i = 0; i < 6; i++) {
     color += letters[Math.floor(Math.random() * 16)];
   }
+
   return color;
 }
 
@@ -110,8 +115,8 @@ export function getRandomColor(): string {
  */
 export function toKebabCase(str: string): string {
   return str
-    .replace(/([a-z])([A-Z])/g, '$1-$2')
-    .replace(/\s+/g, '-')
+    .replace(/([a-z])([A-Z])/g, "$1-$2")
+    .replace(/\s+/g, "-")
     .toLowerCase();
 }
 
@@ -121,10 +126,10 @@ export function toKebabCase(str: string): string {
 export function parseQueryParams(queryString: string): Record<string, string> {
   const params = new URLSearchParams(queryString);
   const result: Record<string, string> = {};
-  
+
   params.forEach((value, key) => {
     result[key] = value;
   });
-  
+
   return result;
 }

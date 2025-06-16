@@ -1,7 +1,6 @@
 // Auth utility functions
 
-import axios from 'axios';
-import { authAPI } from './api';
+import { authAPI } from "./api";
 
 interface Tokens {
   access: string;
@@ -18,30 +17,31 @@ interface User {
 
 // Store auth tokens
 export const setTokens = (tokens: Tokens): void => {
-  if (typeof window !== 'undefined') {
-    localStorage.setItem('accessToken', tokens.access);
-    localStorage.setItem('refreshToken', tokens.refresh);
+  if (typeof window !== "undefined") {
+    localStorage.setItem("accessToken", tokens.access);
+    localStorage.setItem("refreshToken", tokens.refresh);
   }
 };
 
 // Get stored tokens
 export const getTokens = (): Tokens | null => {
-  if (typeof window !== 'undefined') {
-    const access = localStorage.getItem('accessToken');
-    const refresh = localStorage.getItem('refreshToken');
-    
+  if (typeof window !== "undefined") {
+    const access = localStorage.getItem("accessToken");
+    const refresh = localStorage.getItem("refreshToken");
+
     if (access && refresh) {
       return { access, refresh };
     }
   }
+
   return null;
 };
 
 // Remove stored tokens
 export const removeTokens = (): void => {
-  if (typeof window !== 'undefined') {
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
+  if (typeof window !== "undefined") {
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
   }
 };
 
@@ -54,12 +54,15 @@ export const isAuthenticated = (): boolean => {
 export const getCurrentUser = async (): Promise<User | null> => {
   try {
     const tokens = getTokens();
+
     if (!tokens) return null;
 
     const response = await authAPI.getProfile();
+
     return response.data;
   } catch (error) {
-    console.error('Error fetching user profile:', error);
+    console.error("Error fetching user profile:", error);
+
     return null;
   }
 };
@@ -68,14 +71,17 @@ export const getCurrentUser = async (): Promise<User | null> => {
 export const logout = async (): Promise<boolean> => {
   try {
     const tokens = getTokens();
+
     if (!tokens) return true;
 
     await authAPI.logout(tokens.refresh);
     removeTokens();
+
     return true;
   } catch (error) {
-    console.error('Error during logout:', error);
+    console.error("Error during logout:", error);
     removeTokens();
+
     return false;
   }
 };
@@ -84,16 +90,19 @@ export const logout = async (): Promise<boolean> => {
 export const refreshAccessToken = async (): Promise<string | null> => {
   try {
     const tokens = getTokens();
+
     if (!tokens) return null;
 
     const response = await authAPI.refreshToken(tokens.refresh);
     const newAccessToken = response.data.access;
+
     setTokens({ access: newAccessToken, refresh: tokens.refresh });
-    
+
     return newAccessToken;
   } catch (error) {
-    console.error('Error refreshing token:', error);
+    console.error("Error refreshing token:", error);
     removeTokens();
+
     return null;
   }
 };

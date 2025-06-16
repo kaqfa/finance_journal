@@ -46,13 +46,25 @@ export default function CategoriesPage() {
       console.log("Fetching categories...");
       const response = await financeAPI.getCategories();
 
-      console.log("Categories response:", response.data);
+      console.log("Categories response:", response);
+      console.log("Categories data:", response.data);
+      console.log("Is data array?", Array.isArray(response.data));
+      console.log("Data length:", response.data?.length);
 
-      setCategories(Array.isArray(response.data) ? response.data : []);
-    } catch (error) {
+      // Handle both direct array and paginated response
+      const categoriesData = Array.isArray(response.data) 
+        ? response.data 
+        : response.data?.results || [];
+      
+      console.log("Processed categories data:", categoriesData);
+      setCategories(categoriesData);
+    } catch (error: any) {
       console.error("Failed to fetch categories:", error);
-      console.error("Fetch error details:", error);
+      console.error("Error response:", error.response);
+      console.error("Error status:", error.response?.status);
+      console.error("Error data:", error.response?.data);
       setCategories([]);
+      setError("Failed to load categories. Please try refreshing the page.");
     } finally {
       setLoading(false);
     }
@@ -66,21 +78,33 @@ export default function CategoriesPage() {
     try {
       setError(null);
       console.log("Creating category with data:", data);
-      const response = await financeAPI.createCategory(data);
-
-      console.log("Category created successfully:", response.data);
-      setSuccess("Category created successfully!");
-      fetchCategories();
+      
+      if (editingCategory) {
+        // Update existing category
+        const response = await financeAPI.updateCategory(editingCategory.id, data);
+        console.log("Category updated successfully:", response.data);
+        setSuccess("Category updated successfully!");
+      } else {
+        // Create new category
+        const response = await financeAPI.createCategory(data);
+        console.log("Category created successfully:", response.data);
+        setSuccess("Category created successfully!");
+      }
+      
+      // Always refetch data after successful operation
+      await fetchCategories();
       setDialogOpen(false);
+      setEditingCategory(null);
+      
       // Clear success message after 3 seconds
       setTimeout(() => setSuccess(null), 3000);
     } catch (error: any) {
-      console.error("Failed to create category:", error);
+      console.error("Failed to save category:", error);
       console.error("Error details:", error);
       setError(
         error.response?.data?.message ||
           error.message ||
-          "Failed to create category",
+          "Failed to save category",
       );
     }
   };
@@ -93,6 +117,27 @@ export default function CategoriesPage() {
   const handleCloseDialog = () => {
     setDialogOpen(false);
     setEditingCategory(null);
+  };
+
+  const handleDeleteCategory = async (categoryId: number) => {
+    if (!confirm("Are you sure you want to delete this category?")) {
+      return;
+    }
+
+    try {
+      setError(null);
+      await financeAPI.deleteCategory(categoryId);
+      setSuccess("Category deleted successfully!");
+      await fetchCategories(); // Refetch data after deletion
+      setTimeout(() => setSuccess(null), 3000);
+    } catch (error: any) {
+      console.error("Failed to delete category:", error);
+      setError(
+        error.response?.data?.message ||
+          error.message ||
+          "Failed to delete category",
+      );
+    }
   };
 
   const incomeCategories = categories.filter((cat) => cat.type === "income");
@@ -220,7 +265,10 @@ export default function CategoriesPage() {
                           <Edit className="mr-2 h-4 w-4" />
                           Edit
                         </DropdownMenuItem>
-                        <DropdownMenuItem className="text-destructive">
+                        <DropdownMenuItem 
+                          className="text-destructive"
+                          onClick={() => handleDeleteCategory(category.id)}
+                        >
                           <Trash2 className="mr-2 h-4 w-4" />
                           Delete
                         </DropdownMenuItem>
@@ -280,7 +328,10 @@ export default function CategoriesPage() {
                           <Edit className="mr-2 h-4 w-4" />
                           Edit
                         </DropdownMenuItem>
-                        <DropdownMenuItem className="text-destructive">
+                        <DropdownMenuItem 
+                          className="text-destructive"
+                          onClick={() => handleDeleteCategory(category.id)}
+                        >
                           <Trash2 className="mr-2 h-4 w-4" />
                           Delete
                         </DropdownMenuItem>

@@ -1,12 +1,13 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
+import { Plus, Wallet as WalletIcon, AlertCircle } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import { WalletList, Wallet } from "@/types";
 import financeAPI from "@/lib/api/finance";
 import WalletCard from "@/components/finance/WalletCard";
 import WalletForm from "@/components/finance/WalletForm";
-import { Plus, Wallet as WalletIcon, AlertCircle } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
@@ -22,11 +23,12 @@ export default function WalletsPage() {
     try {
       setLoading(true);
       const response = await financeAPI.getWallets();
+
       setWallets(response.data.results);
       setError(null);
     } catch (err) {
-      console.error('Error fetching wallets:', err);
-      setError('Failed to fetch wallets');
+      console.error("Error fetching wallets:", err);
+      setError("Failed to fetch wallets");
     } finally {
       setLoading(false);
     }
@@ -47,7 +49,7 @@ export default function WalletsPage() {
       await fetchWallets();
       setSelectedWallet(undefined);
     } catch (err) {
-      console.error('Error saving wallet:', err);
+      console.error("Error saving wallet:", err);
       throw err;
     } finally {
       setIsSubmitting(false);
@@ -58,11 +60,12 @@ export default function WalletsPage() {
     try {
       // Fetch full wallet details for editing
       const response = await financeAPI.getWallet(wallet.id);
+
       setSelectedWallet(response.data);
       setIsDialogOpen(true);
     } catch (err) {
-      console.error('Error fetching wallet details:', err);
-      alert('Failed to load wallet details');
+      console.error("Error fetching wallet details:", err);
+      alert("Failed to load wallet details");
     }
   };
 
@@ -72,8 +75,8 @@ export default function WalletsPage() {
         await financeAPI.deleteWallet(wallet.id);
         await fetchWallets();
       } catch (err) {
-        console.error('Error deleting wallet:', err);
-        alert('Failed to delete wallet');
+        console.error("Error deleting wallet:", err);
+        alert("Failed to delete wallet");
       }
     }
   };
@@ -98,7 +101,7 @@ export default function WalletsPage() {
           </p>
         </div>
         <div className="flex justify-center items-center min-h-[200px]">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
         </div>
       </div>
     );
@@ -115,14 +118,10 @@ export default function WalletsPage() {
         </div>
         <Alert variant="destructive">
           <AlertCircle className="h-4 w-4" />
-          <AlertDescription>
-            {error}
-          </AlertDescription>
+          <AlertDescription>{error}</AlertDescription>
         </Alert>
         <div className="flex justify-center">
-          <Button onClick={fetchWallets}>
-            Try Again
-          </Button>
+          <Button onClick={fetchWallets}>Try Again</Button>
         </div>
       </div>
     );
@@ -154,11 +153,12 @@ export default function WalletsPage() {
             <div className="text-center space-y-3 max-w-md">
               <h3 className="text-xl font-semibold">No wallets found</h3>
               <p className="text-muted-foreground leading-relaxed">
-                Create your first wallet to get started with tracking your finances. 
-                You can add different types of accounts like cash, bank accounts, and e-wallets.
+                Create your first wallet to get started with tracking your
+                finances. You can add different types of accounts like cash,
+                bank accounts, and e-wallets.
               </p>
             </div>
-            <Button onClick={handleAddNew} size="lg">
+            <Button size="lg" onClick={handleAddNew}>
               <Plus className="mr-2 h-4 w-4" />
               Create Your First Wallet
             </Button>
@@ -170,8 +170,8 @@ export default function WalletsPage() {
             <WalletCard
               key={wallet.id}
               wallet={wallet}
-              onEdit={handleEditWallet}
               onDelete={handleDeleteWallet}
+              onEdit={handleEditWallet}
             />
           ))}
         </div>
@@ -179,11 +179,11 @@ export default function WalletsPage() {
 
       {/* Wallet Form Dialog */}
       <WalletForm
+        isLoading={isSubmitting}
         isOpen={isDialogOpen}
+        wallet={selectedWallet}
         onClose={handleFormClose}
         onSubmit={handleCreateWallet}
-        wallet={selectedWallet}
-        isLoading={isSubmitting}
       />
     </div>
   );

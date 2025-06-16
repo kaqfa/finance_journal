@@ -1,26 +1,10 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useRouter, useParams } from 'next/navigation';
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { 
-  Transaction,
-  WalletList, 
-  Category, 
-  Tag, 
-  CreateTransactionData 
-} from "@/types";
-import financeAPI from "@/lib/api/finance";
-import { 
-  ArrowLeft, 
-  Save, 
+import { useState, useEffect } from "react";
+import { useRouter, useParams } from "next/navigation";
+import {
+  ArrowLeft,
+  Save,
   AlertCircle,
   Wallet,
   FolderOpen,
@@ -28,9 +12,38 @@ import {
   Calendar,
   DollarSign,
   Plus,
-  X
+  X,
 } from "lucide-react";
 import Link from "next/link";
+
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import {
+  Transaction,
+  WalletList,
+  Category,
+  Tag,
+  CreateTransactionData,
+} from "@/types";
+import financeAPI from "@/lib/api/finance";
 
 export default function EditTransactionPage() {
   const router = useRouter();
@@ -44,15 +57,15 @@ export default function EditTransactionPage() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  
+
   const [formData, setFormData] = useState<CreateTransactionData>({
     wallet: 0,
-    amount: '',
-    type: 'expense',
-    description: '',
-    transaction_date: '',
+    amount: "",
+    type: "expense",
+    description: "",
+    transaction_date: "",
     category: undefined,
-    tag_ids: []
+    tag_ids: [],
   });
 
   const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
@@ -62,40 +75,68 @@ export default function EditTransactionPage() {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const [transactionRes, walletsRes, categoriesRes, tagsRes] = await Promise.all([
-          financeAPI.getTransaction(transactionId),
-          financeAPI.getWallets(),
-          financeAPI.getCategories(),
-          financeAPI.getTags()
-        ]);
-        
+        console.log("Fetching edit form data for transaction:", transactionId);
+        const [transactionRes, walletsRes, categoriesRes, tagsRes] =
+          await Promise.all([
+            financeAPI.getTransaction(transactionId),
+            financeAPI.getWallets(),
+            financeAPI.getCategories(),
+            financeAPI.getTags(),
+          ]);
+
+        console.log("Transaction response:", transactionRes.data);
+        console.log("Categories response:", categoriesRes.data);
+        console.log("Tags response:", tagsRes.data);
+
         const transactionData = transactionRes.data;
+
         setTransaction(transactionData);
-        setWallets(Array.isArray(walletsRes.data.results) ? walletsRes.data.results : []);
-        setCategories(Array.isArray(categoriesRes.data) ? categoriesRes.data : []);
-        setTags(Array.isArray(tagsRes.data) ? tagsRes.data : []);
+        setWallets(
+          Array.isArray(walletsRes.data.results) ? walletsRes.data.results : [],
+        );
+        
+        // Handle both direct array and paginated response for categories
+        const categoriesData = Array.isArray(categoriesRes.data) 
+          ? categoriesRes.data 
+          : categoriesRes.data?.results || [];
+        console.log("Processed categories for edit:", categoriesData);
+        setCategories(categoriesData);
+        
+        // Handle both direct array and paginated response for tags
+        const tagsData = Array.isArray(tagsRes.data) 
+          ? tagsRes.data 
+          : tagsRes.data?.results || [];
+        console.log("Processed tags for edit:", tagsData);
+        setTags(tagsData);
 
         // Populate form with transaction data
         setFormData({
           wallet: transactionData.wallet,
           amount: transactionData.amount,
-          type: transactionData.type === 'transfer' ? 'expense' : transactionData.type,
-          description: transactionData.description || '',
+          type:
+            transactionData.type === "transfer"
+              ? "expense"
+              : transactionData.type,
+          description: transactionData.description || "",
           transaction_date: transactionData.transaction_date,
           category: transactionData.category,
-          tag_ids: transactionData.tag_ids
+          tag_ids: transactionData.tag_ids,
         });
 
         // Set selected tags
-        const transactionTags = Array.isArray(tagsRes.data) ? tagsRes.data.filter(tag => 
-          Array.isArray(transactionData.tag_ids) && transactionData.tag_ids.includes(tag.id)
-        ) : [];
+        const transactionTags = tagsData.filter(
+          (tag) =>
+            Array.isArray(transactionData.tag_ids) &&
+            transactionData.tag_ids.includes(tag.id),
+        );
+
         setSelectedTags(transactionTags);
-        
+
         setError(null);
-      } catch (err) {
-        console.error('Error fetching data:', err);
-        setError('Failed to load transaction data');
+      } catch (err: any) {
+        console.error("Error fetching data:", err);
+        console.error("Error response:", err.response);
+        setError("Failed to load transaction data");
       } finally {
         setLoading(false);
       }
@@ -113,39 +154,44 @@ export default function EditTransactionPage() {
       newErrors.wallet = 1;
     }
 
-    if (!formData.amount || isNaN(parseFloat(formData.amount)) || parseFloat(formData.amount) <= 0) {
-      newErrors.amount = 'Valid amount is required';
+    if (
+      !formData.amount ||
+      isNaN(parseFloat(formData.amount)) ||
+      parseFloat(formData.amount) <= 0
+    ) {
+      newErrors.amount = "Valid amount is required";
     }
 
     if (!formData.description?.trim()) {
-      newErrors.description = 'Description is required';
+      newErrors.description = "Description is required";
     }
 
     if (!formData.transaction_date) {
-      newErrors.transaction_date = 'Transaction date is required';
+      newErrors.transaction_date = "Transaction date is required";
     }
 
     setErrors(newErrors);
+
     return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) return;
 
     try {
       setSubmitting(true);
       const submitData = {
         ...formData,
-        tag_ids: selectedTags.map(tag => tag.id)
+        tag_ids: selectedTags.map((tag) => tag.id),
       };
-      
+
       await financeAPI.updateTransaction(transactionId, submitData);
-      router.push('/finance/transactions');
+      router.push("/finance/transactions");
     } catch (err: any) {
-      console.error('Error updating transaction:', err);
-      setError(err.response?.data?.detail || 'Failed to update transaction');
+      console.error("Error updating transaction:", err);
+      setError(err.response?.data?.detail || "Failed to update transaction");
     } finally {
       setSubmitting(false);
     }
@@ -153,36 +199,49 @@ export default function EditTransactionPage() {
 
   const addTag = (tag: Tag) => {
     const currentTags = Array.isArray(selectedTags) ? selectedTags : [];
-    if (!currentTags.find(t => t.id === tag.id)) {
+
+    if (!currentTags.find((t) => t.id === tag.id)) {
       setSelectedTags([...currentTags, tag]);
     }
   };
 
   const removeTag = (tagId: number) => {
-    setSelectedTags(Array.isArray(selectedTags) ? selectedTags.filter(tag => tag.id !== tagId) : []);
+    setSelectedTags(
+      Array.isArray(selectedTags)
+        ? selectedTags.filter((tag) => tag.id !== tagId)
+        : [],
+    );
   };
 
-  const filteredCategories = Array.isArray(categories) ? categories.filter(cat => cat.type === formData.type) : [];
-  const availableTags = Array.isArray(tags) ? tags.filter(tag => 
-    !Array.isArray(selectedTags) || !selectedTags.find(t => t.id === tag.id)
-  ) : [];
+  const filteredCategories = Array.isArray(categories)
+    ? categories.filter((cat) => cat.type === formData.type)
+    : [];
+  const availableTags = Array.isArray(tags)
+    ? tags.filter(
+        (tag) =>
+          !Array.isArray(selectedTags) ||
+          !selectedTags.find((t) => t.id === tag.id),
+      )
+    : [];
 
   if (loading) {
     return (
       <div className="flex-1 space-y-6 p-6 md:p-8">
         <div className="flex items-center gap-4">
-          <Button variant="ghost" size="icon" asChild>
+          <Button asChild size="icon" variant="ghost">
             <Link href="/finance/transactions">
               <ArrowLeft className="h-4 w-4" />
             </Link>
           </Button>
           <div className="space-y-1">
-            <h1 className="text-3xl font-bold tracking-tight">Edit Transaction</h1>
+            <h1 className="text-3xl font-bold tracking-tight">
+              Edit Transaction
+            </h1>
             <p className="text-muted-foreground">Modify transaction details</p>
           </div>
         </div>
         <div className="flex justify-center items-center min-h-[200px]">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
         </div>
       </div>
     );
@@ -192,13 +251,15 @@ export default function EditTransactionPage() {
     return (
       <div className="flex-1 space-y-6 p-6 md:p-8">
         <div className="flex items-center gap-4">
-          <Button variant="ghost" size="icon" asChild>
+          <Button asChild size="icon" variant="ghost">
             <Link href="/finance/transactions">
               <ArrowLeft className="h-4 w-4" />
             </Link>
           </Button>
           <div className="space-y-1">
-            <h1 className="text-3xl font-bold tracking-tight">Edit Transaction</h1>
+            <h1 className="text-3xl font-bold tracking-tight">
+              Edit Transaction
+            </h1>
             <p className="text-muted-foreground">Modify transaction details</p>
           </div>
         </div>
@@ -219,13 +280,15 @@ export default function EditTransactionPage() {
     <div className="flex-1 space-y-6 p-6 md:p-8">
       {/* Page Header */}
       <div className="flex items-center gap-4">
-        <Button variant="ghost" size="icon" asChild>
+        <Button asChild size="icon" variant="ghost">
           <Link href="/finance/transactions">
             <ArrowLeft className="h-4 w-4" />
           </Link>
         </Button>
         <div className="space-y-1">
-          <h1 className="text-3xl font-bold tracking-tight">Edit Transaction</h1>
+          <h1 className="text-3xl font-bold tracking-tight">
+            Edit Transaction
+          </h1>
           <p className="text-muted-foreground">
             Modify the details of your financial transaction
           </p>
@@ -241,7 +304,7 @@ export default function EditTransactionPage() {
       )}
 
       {/* Transaction Form */}
-      <form onSubmit={handleSubmit} className="max-w-2xl space-y-6">
+      <form className="max-w-2xl space-y-6" onSubmit={handleSubmit}>
         {/* Basic Information */}
         <Card>
           <CardHeader>
@@ -257,13 +320,15 @@ export default function EditTransactionPage() {
             {/* Transaction Type */}
             <div className="space-y-2">
               <Label htmlFor="type">Transaction Type</Label>
-              <Select 
-                value={formData.type} 
-                onValueChange={(value) => setFormData(prev => ({ 
-                  ...prev, 
-                  type: value as 'income' | 'expense',
-                  category: undefined
-                }))}
+              <Select
+                value={formData.type}
+                onValueChange={(value) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    type: value as "income" | "expense",
+                    category: undefined,
+                  }))
+                }
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select type" />
@@ -271,13 +336,13 @@ export default function EditTransactionPage() {
                 <SelectContent>
                   <SelectItem value="income">
                     <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                      <div className="w-2 h-2 rounded-full bg-green-500" />
                       Income
                     </div>
                   </SelectItem>
                   <SelectItem value="expense">
                     <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 rounded-full bg-red-500"></div>
+                      <div className="w-2 h-2 rounded-full bg-red-500" />
                       Expense
                     </div>
                   </SelectItem>
@@ -293,13 +358,15 @@ export default function EditTransactionPage() {
                   Rp
                 </span>
                 <Input
-                  id="amount"
-                  type="number"
-                  step="0.01"
-                  placeholder="0"
-                  value={formData.amount}
-                  onChange={(e) => setFormData(prev => ({ ...prev, amount: e.target.value }))}
                   className={`pl-12 ${errors.amount ? "border-destructive" : ""}`}
+                  id="amount"
+                  placeholder="0"
+                  step="0.01"
+                  type="number"
+                  value={formData.amount}
+                  onChange={(e) =>
+                    setFormData((prev) => ({ ...prev, amount: e.target.value }))
+                  }
                 />
               </div>
               {errors.amount && (
@@ -311,12 +378,17 @@ export default function EditTransactionPage() {
             <div className="space-y-2">
               <Label htmlFor="description">Description</Label>
               <Textarea
+                className={errors.description ? "border-destructive" : ""}
                 id="description"
                 placeholder="Enter transaction description..."
-                value={formData.description}
-                onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                className={errors.description ? "border-destructive" : ""}
                 rows={3}
+                value={formData.description}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    description: e.target.value,
+                  }))
+                }
               />
               {errors.description && (
                 <p className="text-sm text-destructive">{errors.description}</p>
@@ -325,19 +397,26 @@ export default function EditTransactionPage() {
 
             {/* Transaction Date */}
             <div className="space-y-2">
-              <Label htmlFor="date" className="flex items-center gap-2">
+              <Label className="flex items-center gap-2" htmlFor="date">
                 <Calendar className="h-4 w-4" />
                 Transaction Date
               </Label>
               <Input
+                className={errors.transaction_date ? "border-destructive" : ""}
                 id="date"
                 type="date"
                 value={formData.transaction_date}
-                onChange={(e) => setFormData(prev => ({ ...prev, transaction_date: e.target.value }))}
-                className={errors.transaction_date ? "border-destructive" : ""}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    transaction_date: e.target.value,
+                  }))
+                }
               />
               {errors.transaction_date && (
-                <p className="text-sm text-destructive">{errors.transaction_date}</p>
+                <p className="text-sm text-destructive">
+                  {errors.transaction_date}
+                </p>
               )}
             </div>
           </CardContent>
@@ -358,11 +437,15 @@ export default function EditTransactionPage() {
             {/* Wallet Selection */}
             <div className="space-y-2">
               <Label htmlFor="wallet">Wallet</Label>
-              <Select 
-                value={formData.wallet.toString()} 
-                onValueChange={(value) => setFormData(prev => ({ ...prev, wallet: parseInt(value) }))}
+              <Select
+                value={formData.wallet.toString()}
+                onValueChange={(value) =>
+                  setFormData((prev) => ({ ...prev, wallet: parseInt(value) }))
+                }
               >
-                <SelectTrigger className={errors.wallet ? "border-destructive" : ""}>
+                <SelectTrigger
+                  className={errors.wallet ? "border-destructive" : ""}
+                >
                   <SelectValue placeholder="Select wallet" />
                 </SelectTrigger>
                 <SelectContent>
@@ -370,7 +453,7 @@ export default function EditTransactionPage() {
                     <SelectItem key={wallet.id} value={wallet.id.toString()}>
                       <div className="flex items-center justify-between w-full">
                         <span>{wallet.name}</span>
-                        <Badge variant="outline" className="ml-2">
+                        <Badge className="ml-2" variant="outline">
                           {wallet.wallet_type}
                         </Badge>
                       </div>
@@ -379,22 +462,26 @@ export default function EditTransactionPage() {
                 </SelectContent>
               </Select>
               {errors.wallet && (
-                <p className="text-sm text-destructive">Please select a wallet</p>
+                <p className="text-sm text-destructive">
+                  Please select a wallet
+                </p>
               )}
             </div>
 
             {/* Category Selection */}
             <div className="space-y-2">
-              <Label htmlFor="category" className="flex items-center gap-2">
+              <Label className="flex items-center gap-2" htmlFor="category">
                 <FolderOpen className="h-4 w-4" />
                 Category (Optional)
               </Label>
-              <Select 
-                value={formData.category?.toString() || "none"} 
-                onValueChange={(value) => setFormData(prev => ({ 
-                  ...prev, 
-                  category: value === "none" ? undefined : parseInt(value) 
-                }))}
+              <Select
+                value={formData.category?.toString() || "none"}
+                onValueChange={(value) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    category: value === "none" ? undefined : parseInt(value),
+                  }))
+                }
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select category" />
@@ -402,7 +489,10 @@ export default function EditTransactionPage() {
                 <SelectContent>
                   <SelectItem value="none">No category</SelectItem>
                   {filteredCategories.map((category) => (
-                    <SelectItem key={category.id} value={category.id.toString()}>
+                    <SelectItem
+                      key={category.id}
+                      value={category.id.toString()}
+                    >
                       {category.name}
                     </SelectItem>
                   ))}
@@ -430,13 +520,17 @@ export default function EditTransactionPage() {
                 <Label>Selected Tags</Label>
                 <div className="flex flex-wrap gap-2">
                   {selectedTags.map((tag) => (
-                    <Badge key={tag.id} variant="default" className="flex items-center gap-1">
+                    <Badge
+                      key={tag.id}
+                      className="flex items-center gap-1"
+                      variant="default"
+                    >
                       {tag.name}
                       <Button
+                        className="h-auto p-0 text-current hover:bg-transparent"
+                        size="sm"
                         type="button"
                         variant="ghost"
-                        size="sm"
-                        className="h-auto p-0 text-current hover:bg-transparent"
                         onClick={() => removeTag(tag.id)}
                       >
                         <X className="h-3 w-3" />
@@ -453,10 +547,10 @@ export default function EditTransactionPage() {
                 <Label>Available Tags</Label>
                 <div className="flex flex-wrap gap-2">
                   {availableTags.map((tag) => (
-                    <Badge 
-                      key={tag.id} 
-                      variant="outline" 
+                    <Badge
+                      key={tag.id}
                       className="cursor-pointer hover:bg-muted"
+                      variant="outline"
                       onClick={() => addTag(tag)}
                     >
                       <Plus className="h-3 w-3 mr-1" />
@@ -471,9 +565,9 @@ export default function EditTransactionPage() {
 
         {/* Form Actions */}
         <div className="flex items-center gap-4 pt-6">
-          <Button type="submit" disabled={submitting} className="min-w-24">
+          <Button className="min-w-24" disabled={submitting} type="submit">
             {submitting ? (
-              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
             ) : (
               <>
                 <Save className="mr-2 h-4 w-4" />
@@ -481,7 +575,7 @@ export default function EditTransactionPage() {
               </>
             )}
           </Button>
-          <Button type="button" variant="outline" asChild>
+          <Button asChild type="button" variant="outline">
             <Link href="/finance/transactions">Cancel</Link>
           </Button>
         </div>

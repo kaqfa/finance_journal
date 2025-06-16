@@ -54,6 +54,6 @@ export const siteConfig = {
   links: {
     github: "https://github.com/yourusername/finance-journal",
     docs: "https://finance-journal.com/docs",
-    sponsor: "https://finance-journal.com"
+    sponsor: "https://finance-journal.com",
   },
 };

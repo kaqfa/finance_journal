@@ -1,10 +1,9 @@
-import { authApi, createEndpoint } from '../config/axios';
+import { authApi, createEndpoint } from "../config/axios";
 
-const DASHBOARD_BASE = 'dashboard';
+const DASHBOARD_BASE = "dashboard";
 
 const dashboardAPI = {
-  getSummary: () => 
-    authApi.get(createEndpoint(`${DASHBOARD_BASE}/summary/`))
+  getSummary: () => authApi.get(createEndpoint(`${DASHBOARD_BASE}/summary/`)),
 };
 
 export default dashboardAPI;

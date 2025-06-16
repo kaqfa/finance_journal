@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 export default function InfoPage() {
   return (
@@ -9,7 +9,7 @@ export default function InfoPage() {
           System information and application details
         </p>
       </div>
-      
+
       <div className="text-center text-muted-foreground py-12">
         <p>Information page coming soon.</p>
       </div>

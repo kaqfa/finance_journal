@@ -15,6 +15,10 @@
     "start-sprint": {
       "description": "Start a new sprint with proper planning and todo setup",
       "prompt": "Start a new sprint with the following steps:\n\n1. Review previous sprint completion status\n2. Archive completed sprints\n3. Create new sprint goals in root CLAUDE.md\n4. Break down goals into technical tasks for app-specific CLAUDE.md files\n5. Initialize session TodoWrite with immediate tasks\n6. Update sprint metrics and dates\n7. Commit sprint initialization\n\nFocus on clear, actionable tasks with realistic timelines."
+    },
+    "update-api-docs": {
+      "description": "Update API_REFERENCE.md from latest OpenAPI documentation",
+      "prompt": "Update the API documentation with the following steps:\n\n1. Fetch the latest OpenAPI spec from http://localhost:8000/api/v1/docs/?format=openapi\n2. Extract and analyze all endpoints, schemas, and responses\n3. Update docs/API_REFERENCE.md with:\n   - New endpoints (including /choices endpoints)\n   - Updated request/response schemas\n   - New query parameters\n   - Authentication requirements\n   - Error response formats\n4. Ensure all finance, investment, and authentication endpoints are documented\n5. Include practical examples and field notes\n6. Update the 'Last Updated' date\n7. Commit the changes with a descriptive message\n\nFocus on:\n- Complete endpoint coverage\n- Accurate request/response examples\n- Field-level documentation (read-only, required, etc.)\n- Proper formatting and organization"
     }
   }
 }

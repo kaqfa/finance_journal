@@ -1,7 +1,14 @@
 "use client";
 
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 const data = [
   {
@@ -50,35 +57,33 @@ export function ExpenseChart() {
     <Card>
       <CardHeader className="pb-4">
         <CardTitle className="text-lg">Expense Breakdown</CardTitle>
-        <CardDescription>
-          Your spending categories this month
-        </CardDescription>
+        <CardDescription>Your spending categories this month</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="h-[280px]">
-          <ResponsiveContainer width="100%" height="100%">
+          <ResponsiveContainer height="100%" width="100%">
             <PieChart>
               <Pie
-                data={data}
                 cx="50%"
                 cy="50%"
-                outerRadius={70}
-                fill="#8884d8"
+                data={data}
                 dataKey="value"
+                fill="#8884d8"
+                outerRadius={70}
                 stroke="none"
               >
                 {data.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={entry.color} />
                 ))}
               </Pie>
-              <Tooltip 
-                formatter={(value) => formatCurrency(value as number)}
-                contentStyle={{ 
-                  backgroundColor: 'hsl(var(--background))',
-                  border: '1px solid hsl(var(--border))',
-                  borderRadius: '6px',
-                  fontSize: '14px'
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: "hsl(var(--background))",
+                  border: "1px solid hsl(var(--border))",
+                  borderRadius: "6px",
+                  fontSize: "14px",
                 }}
+                formatter={(value) => formatCurrency(value as number)}
               />
             </PieChart>
           </ResponsiveContainer>
@@ -87,11 +92,13 @@ export function ExpenseChart() {
           {data.map((item) => (
             <div key={item.name} className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div 
-                  className="h-3 w-3 rounded-full" 
+                <div
+                  className="h-3 w-3 rounded-full"
                   style={{ backgroundColor: item.color }}
                 />
-                <span className="text-sm text-muted-foreground">{item.name}</span>
+                <span className="text-sm text-muted-foreground">
+                  {item.name}
+                </span>
               </div>
               <span className="text-sm font-medium">
                 {formatCurrency(item.value)}

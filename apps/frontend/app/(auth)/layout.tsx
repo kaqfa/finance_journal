@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect } from "react";
-import { useAuth } from "@/contexts/AuthContext";
 import { useRouter, usePathname } from "next/navigation";
+
+import { useAuth } from "@/contexts/AuthContext";
 import AuthLayout from "@/components/auth/AuthLayout";
 import { Spinner } from "@/components/ui/spinner";
 
@@ -26,7 +27,7 @@ export default function AppAuthLayout({
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
-        <Spinner size="lg" label="Loading authentication..." />
+        <Spinner label="Loading authentication..." size="lg" />
       </div>
     );
   }

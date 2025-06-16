@@ -1,8 +1,9 @@
 // fe/app/(dashboard)/layout.tsx
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+
 import { useAuth } from "@/contexts/AuthContext";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import { Spinner } from "@/components/ui/spinner";
@@ -26,13 +27,11 @@ export default function AppDashboardLayout({
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
-        <Spinner size="lg" label="Loading..." />
+        <Spinner label="Loading..." size="lg" />
       </div>
     );
   }
 
   // Only render the children if authenticated
-  return isAuthenticated ? (
-    <DashboardLayout>{children}</DashboardLayout>
-  ) : null;
+  return isAuthenticated ? <DashboardLayout>{children}</DashboardLayout> : null;
 }

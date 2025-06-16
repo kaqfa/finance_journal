@@ -2,8 +2,8 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+
 import { Spinner } from "@/components/ui/spinner";
-import { isAuthenticated } from "@/lib/auth";
 
 export default function HomePage() {
   const router = useRouter();
@@ -13,9 +13,9 @@ export default function HomePage() {
     const checkAuthToken = () => {
       try {
         // Cek apakah ada token di localStorage
-        const accessToken = localStorage.getItem('accessToken');
-        const refreshToken = localStorage.getItem('refreshToken');
-        
+        const accessToken = localStorage.getItem("accessToken");
+        const refreshToken = localStorage.getItem("refreshToken");
+
         if (accessToken && refreshToken) {
           console.log("Found authentication tokens, redirecting to dashboard");
           // Jika ada token, redirect ke dashboard
@@ -31,7 +31,7 @@ export default function HomePage() {
         router.push("/login");
       }
     };
-    
+
     // Panggil fungsi check token
     checkAuthToken();
   }, [router]);
@@ -39,7 +39,7 @@ export default function HomePage() {
   // Show loading spinner while redirecting
   return (
     <div className="flex justify-center items-center min-h-screen">
-      <Spinner size="lg" label="Redirecting..." />
+      <Spinner label="Redirecting..." size="lg" />
     </div>
   );
 }

@@ -1,9 +1,9 @@
 "use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
 import { LucideIcon } from "lucide-react";
+
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 
 interface MetricCardProps {
   title: string;
@@ -29,22 +29,24 @@ export function MetricCard({
     ? trend.value > 0
       ? "text-green-600 dark:text-green-400"
       : trend.value < 0
-      ? "text-red-600 dark:text-red-400"
-      : "text-muted-foreground"
+        ? "text-red-600 dark:text-red-400"
+        : "text-muted-foreground"
     : undefined;
 
   const trendBadgeVariant = trend
     ? trend.value > 0
       ? "default"
       : trend.value < 0
-      ? "destructive"
-      : "secondary"
+        ? "destructive"
+        : "secondary"
     : "secondary";
 
   return (
     <Card className={cn("transition-all hover:shadow-md", className)}>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-        <CardTitle className="text-sm font-medium text-muted-foreground">{title}</CardTitle>
+        <CardTitle className="text-sm font-medium text-muted-foreground">
+          {title}
+        </CardTitle>
         {Icon && (
           <div className="rounded-lg bg-muted p-2">
             <Icon className="h-4 w-4 text-muted-foreground" />
@@ -59,7 +61,8 @@ export function MetricCard({
           )}
           {trend && (
             <div className={`text-xs font-medium ${trendColor}`}>
-              {trend.value > 0 ? "+" : ""}{trend.value}% {trend.label}
+              {trend.value > 0 ? "+" : ""}
+              {trend.value}% {trend.label}
             </div>
           )}
         </div>
